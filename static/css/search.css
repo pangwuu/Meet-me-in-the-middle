@@ -115,21 +115,31 @@ nav ul li + li {
 }
 
 .location-input {
-    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
     padding:10px;
     font-size: 15px;
     border-radius: 15px;
     border: solid;
     border-color: lightgrey;
+    box-shadow: 1px 1px 1px lightgrey;
 }
 
 .small-icon {
-    width: 30px;
-    height: 30px;
-    padding: 4px;
-    border: solid;
-    border-color: lightgrey;
+    width: 27px;
+    height: 27px;
+    padding: 5px;
     border-radius: 50%;
+    margin: 5px;
+}
+
+.location-header {
+    color: #FF5F3f;
+    font-size: 30px;
+    margin: 20px;
+    font-family: "Montserrat", sans-serif;
 }
 
 [type=radio] {
@@ -139,12 +149,20 @@ nav ul li + li {
     height: 0;
 }
 
+
 [type=radio] + img {
     cursor: pointer;
+    transition: background-color 0.4s, width 0.4s, height 0.4s;
 }
 
 [type=radio]:checked + img{
-    outline: 2px solid;
+    outline: none;
+    background-color: #9fd8ec;
+    box-shadow: 1.5px 1.5px 1.5px lightgrey;
+}
+
+[type=radio]:hover + img {
+    background-color: #d3eff9;
 }
 
 
