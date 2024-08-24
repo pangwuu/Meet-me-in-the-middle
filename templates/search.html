@@ -21,10 +21,11 @@
     <div class="main-map" id="main-map">
         <div class="add-location" id="add-location">
             <div class="location-header">
-                <h3>Locations</h3>
+                <h3>Details</h3>
             </div>
                 <div name="location">
-                    <input name="locationa" type="text" placeholder="Location 1" class="location-input" required>
+                    <p class="location-text-head">Location 1</p>
+                    <input name="locationa" type="text" placeholder="Type an address..." class="location-input" required>
                     <br>
                     <label>
                         <input type="radio" name="transport" value="driving" checked>
@@ -43,10 +44,9 @@
                         <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
                     </label>
                 </div>
-                <br>
-                <br>
                 <div name="location">
-                    <input name="locationb" type="text" placeholder="Location 2" class="location-input" required>
+                    <p class="location-text-head">Location 2</p>
+                    <input name="locationb" type="text" placeholder="Type an address..." class="location-input" required>
                     <br>
                     <label>
                         <input type="radio" name="transport2" value="driving" checked>
@@ -65,8 +65,23 @@
                         <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
                     </label>
                 </div>
+                <div name="location">
+                    <p class="location-text-head">Meet Me at a ...</p>
+                    <select id="dropdown" name="places" class="location-input">
+                        <option value="cafe">Cafe</option>
+                        <option value="bakery">Bakery</option>
+                        <option value="gym">Gym</option>
+                        <option value="library">Library</option>
+                        <option value="movie-theatre">Movie Theatre</option>
+                        <option value="night-club">Night Club</option>
+                        <option value="park">Park</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="tourist-attraction">Tourist Attraction</option>
+                      </select>
+                </div>
+                <br>
         </div>
-        <div class="meed-in-mid-outer">
+        <div class="meet-in-mid-outer">
             <input type="submit" value="Meet Me in the Middle!" class="meet-in-mid">
         </div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
