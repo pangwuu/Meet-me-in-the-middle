@@ -33,8 +33,7 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool):
         self.name = name
         self.address = address
         self.rating = rating
@@ -220,20 +219,14 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
         A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
         Each result is a location.
     """
+
+    # This will be dependant on travel options
     geocoded_a = geocode(location_a)
     if geocoded_a is None:
         raise ValueError("Location a could not be geocoded")
     geocoded_b = geocode(location_b)
     if geocoded_b is None:
         raise ValueError("Location b could not be geocoded")
-    
-    # This will be dependant on travel options
-    if mode_a == mode_b:
-        # We will use something which obtains a variety of points at the centre
-        midpoints = get_midpoints(geocoded_a, geocoded_b)
-    else:
-        midpoints = get_midpoints(geocoded_a, geocoded_b)
-    
     
     # This will be dependant on travel options
     if mode_a == mode_b:
@@ -284,7 +277,7 @@ except ValueError as e:
 # Deal with route times from BOTH original locations (matrix?)
 
 for i in locations["results"]:
-    print(f'{get_business_image(i)}')
+    print(f'{i}')
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
@@ -455,5 +448,5 @@ for i in locations["results"]:
 #         ]
 #     })
 
-if __name__ == '__main__':
-    print(get_equidistant_points_around_midpoint(geocode("Manly Vale"), geocode("Epping"), 5))
+# if __name__ == '__main__':
+#     print(get_equidistant_points_around_midpoint(geocode("Manly Vale"), geocode("Epping"), 5))
