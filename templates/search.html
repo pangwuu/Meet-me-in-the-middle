@@ -30,7 +30,9 @@
 <link rel="stylesheet" href="{{  url_for('static', filename='css/search.css'  )}}">
 <nav> 
     <div class = "navbar">
-        <img src="{{url_for('static', filename='images/logo.png')}}" alt="logo" class="small-logo">
+        <a href = "{{  url_for('index')}}">
+            <img src="{{url_for('static', filename='images/logo.png')}}" alt="logo" class="small-logo">
+        </a>
         <div class = "topnav-right">
             <ul> 
             <li><a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a></li>
@@ -43,7 +45,9 @@
 <form action="SUBMIT" class="outer-map">
     <div class="main-map" id="main-map">
         <div class="add-location" id="add-location">
-            <h3 class="location-header">Locations</h3>
+            <div class="location-header">
+                <h3>Locations</h3>
+            </div>
                 <div name="location">
                     <input id="autocomplete" type="text" placeholder="Location 1" class="location-input" required>
                     <br>
