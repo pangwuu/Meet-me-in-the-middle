@@ -63,16 +63,16 @@
                         {% endif %}
                         <br>
                         <img src="{{ a_icon }}" alt="transporta" class="small-icon-a">
-                        {{ (place.time_from_a / 60) | round(1) }} minutes<br>
+                        {{ (place.time_from_a / 60) | round(0) }} minutes<br>
                         <img src="{{ b_icon }}" alt="transportb" class="small-icon-b">
-                        {{ (place.time_from_b / 60) | round(1) }} minutes                        
+                        {{ (place.time_from_b / 60) | round(0) }} minutes                        
                     </p>
                 </div>
                 <div class = "grid-image">
                     <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class = "place-img">
                 </div>
                 <div class = "grid-address">
-                    <p>{{ place.address }}</p>
+                    <a href = "#">{{ place.address }}</a>
                 </div>
             </div>
                 {% endfor %}
