@@ -1,13 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 import googlemaps
 from typing import List
 import json
 from geopy.distance import distance
-import requests
 import math, random
-import time
 import urllib.parse
 
 
