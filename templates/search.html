@@ -14,49 +14,49 @@
 {% endblock %}
 
 {% block body %}
-<form action="SUBMIT" class="outer-map">
+<form action="/search" method="post">
     <div class="main-map" id="main-map">
         <div class="add-location" id="add-location">
             <h3 class="location-header">Locations</h3>
                 <div name="location">
-                    <input type="text" placeholder="Location 1" class="location-input">
+                    <input name="locationa" type="text" placeholder="Location 1" class="location-input">
                     <br>
                     <label>
-                        <input type="radio" name="transport" value="car" checked>
+                        <input type="radio" name="transport" value="driving" checked>
                         <img src="./static/icons/car-solid.svg" alt="car" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport" value="bicycle">
+                        <input type="radio" name="transport" value="bicycling">
                         <img src="./static/icons/bicycle-solid.svg" alt="bicycle" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport" value="train">
+                        <input type="radio" name="transport" value="transit">
                         <img src="./static/icons/train-subway-solid.svg" alt="train-subway" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport" value="walk">
+                        <input type="radio" name="transport" value="walking">
                         <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
                     </label>
                 </div>
                 <br>
                 <br>
                 <div name="location">
-                    <input type="text" placeholder="Location 2" class="location-input">
+                    <input name="locationb" type="text" placeholder="Location 2" class="location-input">
                     <br>
                     <label>
-                        <input type="radio" name="transport2" value="car" checked>
+                        <input type="radio" name="transport2" value="driving" checked>
                         <img src="./static/icons/car-solid.svg" alt="car" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport2" value="bicycle">
+                        <input type="radio" name="transport2" value="bicycling">
                         <img src="./static/icons/bicycle-solid.svg" alt="bicycle" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport2" value="train">
+                        <input type="radio" name="transport2" value="transit">
                         <img src="./static/icons/train-subway-solid.svg" alt="train-subway" class="small-icon">
                     </label>
                     <label>
-                        <input type="radio" name="transport2" value="walk">
+                        <input type="radio" name="transport2" value="walking">
                         <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
                     </label>
                 </div>

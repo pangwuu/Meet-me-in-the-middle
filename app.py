@@ -15,8 +15,12 @@ def search():
     if request.method == 'POST':
         print("MUST PRINT VALUES FROM form")
 
-        # call helper functions
-        return redirect(url_for('route', info='some_info'))
+        print(request.form['transport'])
+        print(request.form['transport2'])
+        print(request.form['locationa'])
+        print(request.form['locationb'])
+        #return redirect(url_for('route', info='some_info'))
+        return redirect('/')
 
     else:
         return render_template('search.html')
