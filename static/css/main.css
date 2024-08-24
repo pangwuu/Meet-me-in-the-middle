@@ -1,7 +1,7 @@
 body {
+    margin: 0;
     background-color: #9fd8ec;
     color: #FF5F3f;
-    line-height: 1.6;
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
 }

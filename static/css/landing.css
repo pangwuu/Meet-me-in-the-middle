@@ -1,8 +1,36 @@
+.container {
+
+}
+
+.mainbody {
+    align-items: center;
+    margin: auto;
+    display: block;
+    overflow: hidden;  
+}
+
+.header-text {
+    margin: auto;
+    justify-content: center;
+    width: 500px;
+    margin-top: 250px;
+}
+
+.catch-phrase {
+    color: #000;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+}
+
+.small-logo {
+    width:100px;
+}
 
 .get-started { 
     position: relative;
     justify-content: center;
-    display: flex;
     display: block;
     margin: auto;
     width: 300px;
@@ -11,16 +39,6 @@
     border: none;
     background-color: #FF5F3f;
     transition: width 0.25s, height 0.25s, background-color 0.25s;
-    transform-origin: 50% 50%;
-}
-
-.mainbody {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
-    display: block;
-    overflow: hidden;
 }
 
 .get-started:hover {
