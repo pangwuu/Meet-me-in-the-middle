@@ -94,10 +94,10 @@ nav ul li + li {
     position: absolute;
     border-radius: 10px;
     color: black;
-    margin-left: 20px;
-    margin-top: 20px;
-    padding: 30px;
-    box-shadow: 5px 5px 5px darkgrey;
+    margin-left: 30px;
+    margin-top: 30px;
+    padding: 10px 30px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     width: 20%;
 }
 
@@ -119,8 +119,22 @@ nav ul li + li {
     border-radius: 15px;
     border: solid;
     border-color: lightgrey;
-    box-shadow: 1px 1px 1px lightgrey;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
     width: 80%;
+}
+
+.place-input {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding:10px;
+    font-size: 15px;
+    border-radius: 15px;
+    border: solid;
+    border-color: lightgrey;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+    width: 87%;
 }
 
 .location-text-head {
@@ -142,6 +156,10 @@ nav ul li + li {
     margin: 5px;
 }
 
+.mode-of-transport {
+    margin-left: 40px;
+}
+
 .location-header {
     color: #FF5F3f;
     font-size: 1.8rem;
@@ -158,7 +176,6 @@ nav ul li + li {
     height: 0;
 }
 
-
 [type=radio] + img {
     cursor: pointer;
     transition: background-color 0.4s, width 0.4s, height 0.4s;
@@ -167,7 +184,7 @@ nav ul li + li {
 [type=radio]:checked + img{
     outline: none;
     background-color: #9fd8ec;
-    box-shadow: 1.5px 1.5px 1.5px lightgrey;
+    box-shadow: 1.5px 1.5px 1.5px rgba(0,0,0,0.2);
 }
 
 [type=radio]:hover + img {
@@ -186,7 +203,7 @@ nav ul li + li {
     color: white;
     padding: 15px;
     border: none;
-    box-shadow: 3px 3px 3px darkgrey;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     border-radius: 20px;
 }
 
