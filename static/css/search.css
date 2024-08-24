@@ -18,7 +18,7 @@ body {
 /* navigation bar */
 .navbar {
     height: 40px;
-    background-color: #9fd8ec;
+    background-color: #f6f5f5;
     padding : 15px 15px ;
 }
 
@@ -182,5 +182,5 @@ nav ul li + li {
 }
 
 .meet-in-mid:hover {
-    background-color: #ff441e;
+    background-color: #ff441e
 }
