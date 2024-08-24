@@ -1,31 +1,26 @@
 .container {
-
-}
-
-.mainbody {
-    align-items: center;
     margin: auto;
-    display: block;
-    overflow: hidden;  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 .header-text {
     margin: auto;
-    justify-content: center;
     width: 500px;
-    margin-top: 250px;
+    margin: 20px 0; /* Adds some margin for spacing */
 }
 
 .catch-phrase {
     color: #000;
     text-align: center;
-    align-items: center;
-    justify-items: center;
-    align-content: center;
 }
 
 .small-logo {
-    width:100px;
+    width: 50px;
+    height: 50px;
 }
 
 .get-started { 

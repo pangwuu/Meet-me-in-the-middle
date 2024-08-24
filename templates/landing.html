@@ -6,13 +6,13 @@
 
 {% block body %}
 <div class = "container">
+    <img src="{{url_for('static', filename='images/logo.png')}}" />
     <div class = "header-text">
         <h1 class = "catch-phrase">
             Don't know where to meet? Let's <em><u>Meet in the Middle!</u></em>
         </h1>
     </div>
     <div class = "mainbody">
-        <img src="{{url_for('static', filename='images/logo.png')}}" />
         <button class = "get-started">
             <a href = "{{  url_for('search')}}" class = "get-started-link" id="get-started">
                 Get Started!
