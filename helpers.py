@@ -37,7 +37,7 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, time_from_a: int, time_from_b: int):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, time_from_a: int, time_from_b: int, embed_link: str, latitude: float, longitude: float):
         self.name = name
         self.address = address
         self.rating = rating
@@ -48,9 +48,17 @@ class Place:
         # Get the time from this location from location a and location b
         self.time_from_a = time_from_a
         self.time_from_b = time_from_b
+        self.embed_link = embed_link
+        
+        # Add latitude and longitude
+        self.latitude = latitude
+        self.longitude = longitude
 
     def __repr__(self):
-        return f"Place(name={self.name}, address={self.address}, rating={self.rating},total_ratings={self.total_ratings}, business_image_link={self.business_image_link}, time_from_a={self.time_from_a}, time_from_b={self.time_from_b})"
+        return (f"Place(name={self.name}, address={self.address}, rating={self.rating}, "
+                f"total_ratings={self.total_ratings}, business_image_link={self.business_image_link}, "
+                f"time_from_a={self.time_from_a}, time_from_b={self.time_from_b}, "
+                f"latitude={self.latitude}, longitude={self.longitude})")
 
 # Helper functions
 def geocode(address):
@@ -65,7 +73,7 @@ def geocode(address):
         return f"{location['lat']},{location['lng']}"
     return None
 
-def get_midpoints(coord_a, coord_b, num_points=3):
+def get_midpoints(coord_a, coord_b, num_points=5):
     """
     Returns num_points (10 as default) points equidistant to each other, 
     along the way from coord_a and coord_b.
@@ -250,16 +258,15 @@ def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
     return times_a_to_m, times_b_to_m
 
 
-# Step 2: Function to parse JSON and create Place objects
 def parse_places(json_data: str) -> List[Place]:
     """
-    Function to parse JSON and create Place objects out of each of them
+    Function to parse JSON and create Place objects out of each of them.
     """
     places = []
     
     # Parse the JSON data
-    dumped_data = json.dumps(json_data)
-    data = json.loads(dumped_data)
+    data = json.dumps(json_data)
+    data = json.loads(data)
     
     # Extract places list
     results = data.get('results', [])
@@ -268,12 +275,17 @@ def parse_places(json_data: str) -> List[Place]:
     for result in results:
         name = result.get('name')
         address = result.get('vicinity')
-        rating = result.get('rating')
-        total_ratings = result.get('user_ratings_total')
+        rating = result.get('rating', 0.0)  # Default to 0.0 if not available
+        total_ratings = result.get('user_ratings_total', 0)  # Default to 0 if not available
         link = get_business_image(result)
         
+        # Extract latitude and longitude
+        location = result.get('geometry', {}).get('location', {})
+        latitude = location.get('lat', 0.0)  # Default to 0.0 if not available
+        longitude = location.get('lng', 0.0)  # Default to 0.0 if not available
+        
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, link, -1, -1)
+        place = Place(name, address, rating, total_ratings, link, -1, -1, '', latitude, longitude)
         places.append(place)
 
     return places
@@ -353,6 +365,7 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
         raise ValueError("Location b could not be geocoded")
     
     if mode_a == mode_b:
+        # Real midpoint is probably near the middle - tune performance by using less points
         midpoints = get_midpoints(geocoded_a, geocoded_b)
     else:
         midpoints = get_midpoints(geocoded_a, geocoded_b, num_points=10)
@@ -366,6 +379,9 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     nearby = find_nearby_places(best, location_type, max_results=5)
     return nearby
 
+def get_embed_link(lat_lng):
+    return f"https://www.google.com/maps/embed/v1/place?q={lat_lng}&key={GOOG_API_KEY}"
+
 def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
     
     a_to_m, b_to_m = get_travel_times_matrix(location_a, location_b, locations_classes, mode_a, mode_b)
@@ -373,9 +389,9 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
     for n in range(len(locations_classes)):
         locations_classes[n].time_from_a = a_to_m[n]
         locations_classes[n].time_from_b = b_to_m[n]
-    
+        locations_classes[n].embed_link = locations_classes[n].address
+        
     return locations_classes
-
 
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
     # try:
@@ -397,3 +413,8 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
     sorted_places = sorted(updated_locations_classes, key=lambda place: abs(place.time_from_a - place.time_from_b))
 
     return sorted_places
+
+def get_embed_link(lat_lng):
+    return f"https://www.google.com/maps/embed/v1/place?q={lat_lng}&key={GOOG_API_KEY}"
+
+print(get_embed_link(geocode("435 Crown St, Surry Hills NSW 2010")))
