@@ -12,6 +12,21 @@
         </div>
     </div>
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const mapSelector = document.getElementById('mapSelector');
+  const mapFrame = document.getElementById('mapFrame');
+
+  // Set initial map
+  mapFrame.src = mapSelector.value;
+
+  // Add event listener for changes
+  mapSelector.addEventListener('change', function() {
+    mapFrame.src = this.value;
+  });
+});
+    
+</script>
 {% endblock %}
 
 {% block body %}
@@ -49,6 +64,7 @@
         <div class = "grid-container">
             <div class="grid-items-locations">
             {% for place in places %}
+            <a >idk does tis word</a>
             <div class="location-format">
                 <div class = "grid-title">
                     <h3>{{ place.name }}</h3>
