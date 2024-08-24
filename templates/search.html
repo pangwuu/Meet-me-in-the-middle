@@ -1,16 +1,21 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link rel="stylesheet" href="{{  url_for('static', filename='css/search.css'  )}}">
 <h1>
     Meet Me in the Middle
 </h1>
 {% endblock %}
 
 {% block body %}
-<div>
-    
-</div>
-<div>
-
+<div class="main-map" id="main-map">
+    <div class="add-location" id="add-location">
+        <h3>Add People</h3>
+        <input type="text">
+        <p>Person 1</p>
+        <input type="text">
+        <p>Person 2</p>
+    </div>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
 </div>
 {% endblock %}
