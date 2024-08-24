@@ -1,11 +1,38 @@
 {% extends "base.html" %}
 
 {% block head %}
+<script>
+    let autocomplete;
+    function initAutocomplete() {
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('autocomplete'),
+            {
+                types: ['establishment'],
+                componentRestrictions: {'country' : ['AU']},
+                fields: ['place_id', 'geometry', 'name']
+            });
+
+        autocomplete.addListener('place_changed', onPlaceChanged);
+    }
+
+    function onPlaceChanged() {
+        var place = autocomplete.getPlace();
+
+        if (!place.geometry){
+            // User did not select a prediction; reset the input field
+            document.getElementById('autocomplete').placeholder = 'Enter a Place';
+        } else {
+            document.getElementById('details').innerHTML = place.name;
+        }
+    }
+</script>
+
 <link rel="stylesheet" href="{{  url_for('static', filename='css/search.css'  )}}">
-<<<<<<< HEAD
 <nav> 
     <div class = "navbar">
-        <img src="{{url_for('static', filename='images/logo.png')}}" alt="logo">
+        <a href = "{{  url_for('index')}}">
+            <img src="{{url_for('static', filename='images/logo.png')}}" alt="logo" class="small-logo">
+        </a>
         <div class = "topnav-right">
             <ul> 
             <li><a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a></li>
@@ -15,31 +42,60 @@
 {% endblock %}
 
 {% block body %}
-<div class="outer-map">
+<form action="SUBMIT" class="outer-map">
     <div class="main-map" id="main-map">
         <div class="add-location" id="add-location">
-            <h3>Add a Location</h3>
-            <input type="text" placeholder="Location 1"><br>
-            <input type="text" placeholder="Location 2">
+            <div class="location-header">
+                <h3>Locations</h3>
+            </div>
+                <div name="location">
+                    <input id="autocomplete" type="text" placeholder="Location 1" class="location-input" required>
+                    <br>
+                    <label>
+                        <input type="radio" name="transport" value="car" checked>
+                        <img src="./static/icons/car-solid.svg" alt="car" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport" value="bicycle">
+                        <img src="./static/icons/bicycle-solid.svg" alt="bicycle" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport" value="train">
+                        <img src="./static/icons/train-subway-solid.svg" alt="train-subway" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport" value="walk">
+                        <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
+                    </label>
+                </div>
+                <br>
+                <br>
+                <div name="location">
+                    <input id="autocomplete" type="text" placeholder="Location 2" class="location-input" required>
+                    <br>
+                    <label>
+                        <input type="radio" name="transport2" value="car" checked>
+                        <img src="./static/icons/car-solid.svg" alt="car" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport2" value="bicycle">
+                        <img src="./static/icons/bicycle-solid.svg" alt="bicycle" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport2" value="train">
+                        <img src="./static/icons/train-subway-solid.svg" alt="train-subway" class="small-icon">
+                    </label>
+                    <label>
+                        <input type="radio" name="transport2" value="walk">
+                        <img src="./static/icons/walking-solid.svg" alt="walking" class="small-icon">
+                    </label>
+                </div>
+        </div>
+        <div class="meed-in-mid-outer">
+            <input type="submit" value="Meet Me in the Middle!" class="meet-in-mid">
         </div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
     </div>
-=======
-<h1>
-    Meet Me in the Middle
-</h1>
-{% endblock %}
+</form>
 
-{% block body %}
-<div class="main-map" id="main-map">
-    <div class="add-location" id="add-location">
-        <h3>Add People</h3>
-        <input type="text">
-        <p>Person 1</p>
-        <input type="text">
-        <p>Person 2</p>
-    </div>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
->>>>>>> main
-</div>
 {% endblock %}

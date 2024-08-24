@@ -18,18 +18,15 @@ body {
 /* navigation bar */
 .navbar {
     height: 40px;
-    background-color: #9fd8ec;
+    background-color: #f6f5f5;
     padding : 15px 15px ;
 }
 
-.logo {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    font-weight: 550;
-}
-
 .home {
-    font-weight : bold;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    color: #FF5F3f;
+    font-size: 1.5rem;
 }
 
 .topnav-left {
@@ -81,45 +78,6 @@ nav ul li + li {
     align-items: center;
 }
 
-.down-arrow{
-    width: 15px;
-    height: 15px;
-    margin-left: -10px;
-    margin-top: 2px;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #B09CFC;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 2;
-    border-radius: 7px;
-    font-size: 13px;
-    right: 0;
-}
-  
-/* Links inside the dropdown */
-.dropdown-content a {
-    float: none;
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-}
-
-.dropdown-content a:hover {
-    background-color: #8C6EFA;
-    border-radius: 7px;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
 
 .outer-map{
     height: 90%;
@@ -138,12 +96,88 @@ nav ul li + li {
     color: black;
     margin-left: 20px;
     margin-top: 20px;
-    padding: 20px;
+    padding: 30px;
     box-shadow: 5px 5px 5px darkgrey;
-    height: 50%;
-    width: 200px;
+    width: 20%;
 }
 
 .main-map {
     width: 100%;
+}
+
+.small-logo {
+    height: 100%;
+}
+
+.location-input {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding:10px;
+    font-size: 15px;
+    border-radius: 15px;
+    border: solid;
+    border-color: lightgrey;
+    box-shadow: 1px 1px 1px lightgrey;
+    width: 80%;
+}
+
+.small-icon {
+    width: 27px;
+    height: 27px;
+    padding: 5px;
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.location-header {
+    color: #FF5F3f;
+    font-size: 1.8rem;
+    margin: 1.8rem;
+    font-family: "Montserrat", sans-serif;
+    align-items: center;
+}
+
+[type=radio] {
+    position:absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+[type=radio] + img {
+    cursor: pointer;
+    transition: background-color 0.4s, width 0.4s, height 0.4s;
+}
+
+[type=radio]:checked + img{
+    outline: none;
+    background-color: #9fd8ec;
+    box-shadow: 1.5px 1.5px 1.5px lightgrey;
+}
+
+[type=radio]:hover + img {
+    background-color: #d3eff9;
+}
+
+.meet-in-mid {
+    position: absolute;
+    bottom: 10%;
+    width: 17rem;
+    left: 40%;
+    right: 40%;
+    background-color: #FF5F3f;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1rem;
+    color: white;
+    padding: 15px;
+    border: none;
+    box-shadow: 3px 3px 3px darkgrey;
+    border-radius: 20px;
+}
+
+.meet-in-mid:hover {
+    background-color: #ff441e
 }
