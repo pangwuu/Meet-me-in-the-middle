@@ -21,6 +21,19 @@ def search():
         transportB = request.form['transport2']
 
         # TOADD: dealing with specific ideas like cafe etc
+        # TOADD: Deal with errors such as
+        
+            # except ValueError as e:
+            #     if str(e) == "Location a could not be geocoded":
+            #         print("Could not geocode location A")
+            #     elif str(e) == "Location b could not be geocoded":
+            #         print("Could not geocode location B")
+            #     elif str(e) == "Best location could not be found":
+            #         print("Could not find a best location")
+            #     else:
+            #         # Re-raise the exception if it's not one of the expected messages
+            #         raise
+
         results = helpers.get_middle_locations(locA, locB, transportA, transportB)
         return render_template('route.html', output=results)
 
