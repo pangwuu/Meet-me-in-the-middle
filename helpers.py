@@ -327,7 +327,7 @@ def get_midpoints_around_midpoint(coord_a, coord_b, num_points=10, radius_ratio=
     
     return midpoints
 
-def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
+def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
     """
     A combination of all the above helper functions to locate 10
     places roughly equidistant in travel time between the two original locations,
@@ -359,10 +359,11 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     
     if midpoints is None:
         raise ValueError
+    
     best = find_best_midpoint(geocoded_a, geocoded_b, midpoints, mode_a, mode_b)
     if best is None:
         raise ValueError("Best location could not be found")
-    nearby = find_nearby_places(best, location_type, max_results=6)
+    nearby = find_nearby_places(best, location_type, max_results=5)
     return nearby
 
 def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
@@ -376,10 +377,9 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
     return locations_classes
 
 
-def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
+def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
     # try:
     #     # a = time.time()
-    locations_dict = get_middle_locations(location_a, location_b , mode_a, mode_b)
     #     # b = time.time()
     # except ValueError as e:
     #     if str(e) == "Location a could not be geocoded":
@@ -392,8 +392,7 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
     #         # Re-raise the exception if it's not one of the expected messages
     #         raise
 
-    locations_classes = parse_places(locations_dict)
-
+    locations_classes = parse_places(get_middle_locations(location_a, location_b , mode_a, mode_b, location_type))
     updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
     sorted_places = sorted(updated_locations_classes, key=lambda place: abs(place.time_from_a - place.time_from_b))
 
