@@ -102,7 +102,6 @@ nav ul li + li {
     padding: 20px;
     box-shadow: 5px 5px 5px darkgrey;
     height: 50%;
-    width: 200px;
 }
 
 .main-map {
@@ -125,6 +124,7 @@ nav ul li + li {
     border: solid;
     border-color: lightgrey;
     box-shadow: 1px 1px 1px lightgrey;
+    width: 170px;
 }
 
 .small-icon {
@@ -137,8 +137,8 @@ nav ul li + li {
 
 .location-header {
     color: #FF5F3f;
-    font-size: 30px;
-    margin: 20px;
+    font-size: 1.8rem;
+    margin: 1.8rem;
     font-family: "Montserrat", sans-serif;
 }
 
@@ -165,4 +165,22 @@ nav ul li + li {
     background-color: #d3eff9;
 }
 
+.meet-in-mid {
+    position: absolute;
+    bottom: 10%;
+    width: 17rem;
+    left: 40%;
+    right: 40%;
+    background-color: #FF5F3f;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1rem;
+    color: white;
+    padding: 15px;
+    border: none;
+    box-shadow: 3px 3px 3px darkgrey;
+    border-radius: 20px;
+}
 
+.meet-in-mid:hover {
+    background-color: #ff441e;
+}

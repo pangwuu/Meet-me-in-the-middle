@@ -128,8 +128,14 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     
     # Distance matrix code found here:
     # https://github.com/googlemaps/google-maps-services-python/blob/master/googlemaps/distance_matrix.py
-    matrix_a = gmaps.distance_matrix(origins=[coord_a], destinations=midpoints, mode=mode_a)
-    matrix_b = gmaps.distance_matrix(origins=[coord_b], destinations=midpoints, mode=mode_b)
+    try:
+        matrix_a = gmaps.distance_matrix(origins=[coord_a], destinations=midpoints, mode=mode_a)
+    except ValueError:
+        return None
+    try:
+        matrix_b = gmaps.distance_matrix(origins=[coord_b], destinations=midpoints, mode=mode_b)
+    except ValueError:
+        return None        
     
     min_diff = float('inf')
     best_midpoint = None
@@ -154,12 +160,15 @@ def find_nearby_places(location, place_type, radius=100, max_results=10):
     places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
     results = places.get('results', [])
     
-    while len(results) < max_results and radius <= 2000:
-        radius *= 2
+    # Continue searching until at least 3 results are found
+    while len(results) < 3 and len(results) < max_results:
+        radius *= 1.5  # Increase the radius to expand the search area
         places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
-        results.extend(places.get('results', []))
-        results = list({place['place_id']: place for place in results}.values())  # Remove duplicates
-    
+        new_results = places.get('results', [])
+        results.extend(new_results)
+        # Remove duplicates
+        results = list({place['place_id']: place for place in results}.values())
+
     return {"results": results[:max_results]}
 
 # Step 2: Function to parse JSON and create Place objects
@@ -192,6 +201,42 @@ def parse_places(json_data: str) -> List[Place]:
         places.append(place)
 
     return places
+
+def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
+    """
+    A combination of all the above helper functions to locate 10
+    places roughly equidistant in travel time between the two original locations,
+    assuming the person starting from location_a utilises mode_a of transport
+
+    Args:
+        location_a, location_b (str): The original two locations that are being met from
+        mode_a, mode_b (str): The two modes of transport both people are using
+        location_type (str): The location type for the meetup. Full list here:
+        https://developers.google.com/maps/documentation/places/web-service/supported_types
+
+    Returns:
+        A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
+        Each result is a location.
+    
+    """
+
+    geocoded_a = geocode(location_a)
+    if geocoded_a is None:
+        raise ValueError("Location a could not be geocoded")
+    geocoded_b = geocode(location_b)
+    if geocoded_b is None:
+        raise ValueError("Location b could not be geocoded")
+    midpoints = get_midpoints(geocoded_a, geocoded_b)
+    best = find_best_midpoint(geocoded_a, geocoded_b, midpoints, mode_a, mode_b)
+    if best is None:
+        raise ValueError("Best location could not be found")
+    nearby = find_nearby_places(best, location_type)
+    return nearby
+
+locations = get_middle_locations("Burwood Sydney", "Burwood Victoria 3125", "driving", "driving", "cafe")
+print(type(locations['results'][0]))
+for i in parse_places(locations):
+    print(i)
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
