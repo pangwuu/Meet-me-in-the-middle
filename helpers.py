@@ -8,6 +8,7 @@ from geopy.distance import distance
 
 import random
 import math
+import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -23,8 +24,7 @@ gmaps = googlemaps.Client(key=GOOG_API_KEY)
 class Meeting(db.Model):
     """
     Holds a meeting object, which stores both locations, 
-    both forms of transport,
-    as well as an oprional meeting point and place type
+    both forms of transport, as well as an oprional meeting point and place type
     """
     id = db.Column(db.Integer, primary_key=True)
     location_a = db.Column(db.String(100))
@@ -35,14 +35,17 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, latitude: float, longitude: float, types: List[str]):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
         self.name = name
         self.address = address
         self.rating = rating
         self.total_ratings = total_ratings
-        self.latitude = latitude
-        self.longitude = longitude
-        self.types = types
+        # This can potentially be empty - think of the consequences
+        self.business_image_link = business_image_link 
+        # currently open
+        self.currently_open = currently_open
+        # routes estimated time for both
+        # Get the google link
 
     def __repr__(self):
         return f"Place(name={self.name}, address={self.address}, rating={self.rating}, total_ratings={self.total_ratings}, latitude={self.latitude}, longitude={self.longitude}, types={self.types})"
@@ -211,43 +214,9 @@ def get_midpoints_around_midpoint(coord_a, coord_b, num_points=10, radius_ratio=
         radius_ratio (float): The radius as a percentage of the direct distance between the points.
 
     Returns:
-        midpoints (List[str]): A list of midpoints each consisting of a
-        string that contains the latitude and longitude of each location.
+        A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
+        Each result is a location.
     """
-    lat_a, lng_a = map(float, coord_a.split(','))
-    lat_b, lng_b = map(float, coord_b.split(','))
-    
-    # Calculate the midpoint
-    mid_lat = (lat_a + lat_b) / 2
-    mid_lng = (lng_a + lng_b) / 2
-    
-    # Calculate the distance between the two points
-    dist_lat = lat_b - lat_a
-    dist_lng = lng_b - lng_a
-    distance = math.sqrt(dist_lat ** 2 + dist_lng ** 2)
-    
-    # Radius of the circle around the midpoint
-    radius = radius_ratio * distance
-    
-    midpoints = []
-    
-    for _ in range(num_points):
-        # Random angle in radians
-        angle = random.uniform(0, 2 * math.pi)
-        # Random distance from midpoint within the radius
-        random_distance = random.uniform(0, radius)
-        
-        # Calculate the new point
-        lat_m = mid_lat + random_distance * math.cos(angle)
-        lng_m = mid_lng + random_distance * math.sin(angle)
-        
-        midpoints.append(f"{lat_m},{lng_m}")
-    
-    return midpoints
-
-import math
-
-import math
 
 def get_equidistant_points_around_midpoint(coord_a, coord_b, num_points=10, radius_ratio=0.1):
     """
@@ -294,6 +263,83 @@ def get_equidistant_points_around_midpoint(coord_a, coord_b, num_points=10, radi
         midpoints.append(f"{lat_m},{lng_m}")
     
     return midpoints
+
+def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
+    """
+    A combination of all the above helper functions to locate 10
+    places roughly equidistant in travel time between the two original locations,
+    assuming the person starting from location_a utilises mode_a of transport
+
+    Args:
+        location_a, location_b (str): The original two locations that are being met from
+        mode_a, mode_b (str): The two modes of transport both people are using
+        location_type (str): The location type for the meetup. Full list here:
+        https://developers.google.com/maps/documentation/places/web-service/supported_types
+
+    Returns:
+        A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
+        Each result is a location.
+    
+    """
+    geocoded_a = geocode(location_a)
+    if geocoded_a is None:
+        raise ValueError("Location a could not be geocoded")
+    geocoded_b = geocode(location_b)
+    if geocoded_b is None:
+        raise ValueError("Location b could not be geocoded")
+    
+    # This will be dependant on travel options
+    if mode_a == mode_b:
+        # We will use something which obtains a variety of points at the centre
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    else:
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    
+    best = find_best_midpoint(geocoded_a, geocoded_b, midpoints, mode_a, mode_b)
+    if best is None:
+        raise ValueError("Best location could not be found")
+    nearby = find_nearby_places(best, location_type)
+    return nearby
+
+def get_place_photo_url(photo_reference, max_width=400):
+    base_url = "https://maps.googleapis.com/maps/api/place/photo"
+    params = {
+        "maxwidth": max_width,
+        "photoreference": photo_reference,
+        "key": GOOG_API_KEY
+    }
+    response = requests.get(base_url, params=params)
+    return response.url
+
+def get_business_image(place_data):
+    '''
+    From a place's data, returns an image link for the place
+    '''
+    if 'photos' in place_data and place_data['photos']:
+        photo_reference = place_data['photos'][0]['photo_reference']
+        return get_place_photo_url(photo_reference)
+    return None  # Return None if no photo is available
+
+try:
+    locations = get_middle_locations("Fisher library University of Sydney", "Castle towers", "driving", "driving")
+except ValueError as e:
+    if str(e) == "Location a could not be geocoded":
+        print("Could not geocode location A")
+    elif str(e) == "Location b could not be geocoded":
+        print("Could not geocode location B")
+    elif str(e) == "Best location could not be found":
+        print("Could not find a best location")
+    else:
+        # Re-raise the exception if it's not one of the expected messages
+        raise
+
+# make sure json loads into Place objects perfectly
+# Deal with route times from BOTH original locations (matrix?)
+
+for i in locations["results"]:
+    print(f'{get_business_image(i)}')
+        # midpoints (List[str]): A list of midpoints each consisting of a
+        # string that contains the latitude and longitude of each location.
 
 
 # # Route
