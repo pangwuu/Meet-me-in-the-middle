@@ -373,20 +373,20 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     return nearby
 
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
-    try:
-        # a = time.time()
-        locations_dict = get_middle_locations(location_a, location_b , mode_a, mode_b)
-        # b = time.time()
-    except ValueError as e:
-        if str(e) == "Location a could not be geocoded":
-            print("Could not geocode location A")
-        elif str(e) == "Location b could not be geocoded":
-            print("Could not geocode location B")
-        elif str(e) == "Best location could not be found":
-            print("Could not find a best location")
-        else:
-            # Re-raise the exception if it's not one of the expected messages
-            raise
+    # try:
+    #     # a = time.time()
+    locations_dict = get_middle_locations(location_a, location_b , mode_a, mode_b)
+    #     # b = time.time()
+    # except ValueError as e:
+    #     if str(e) == "Location a could not be geocoded":
+    #         print("Could not geocode location A")
+    #     elif str(e) == "Location b could not be geocoded":
+    #         print("Could not geocode location B")
+    #     elif str(e) == "Best location could not be found":
+    #         print("Could not find a best location")
+    #     else:
+    #         # Re-raise the exception if it's not one of the expected messages
+    #         raise
 
     locations_classes = parse_places(locations_dict, location_a, location_b, mode_a, mode_b)
     return locations_classes

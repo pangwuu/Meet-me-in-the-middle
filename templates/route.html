@@ -25,7 +25,14 @@
     {% if output %}
     <ul>
         {% for place in output['results'] %}
-            <li>{{ place['name'] }}</li>
+            <li>{{ place.name }}</li>
+            <li>{{ place.address }}</li>
+            <li>{{ place.rating }} ({{ place.total_ratings }})</li>
+
+            <img src = {{ place.business_image_link }}>
+        
+            <li>{{ place.time_from_a }}</li>
+            <li>{{ place.time_from_b }}</li>
         {% endfor %} 
     {% else %}
         <p>No results found.</p>
