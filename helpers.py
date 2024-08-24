@@ -8,6 +8,8 @@ from geopy.distance import distance
 import requests
 import math, random
 import time
+import urllib.parse
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -177,25 +179,24 @@ def find_nearby_places(location, place_type, radius=100, max_results=3):
     
     return {"results": results[:max_results]}
 
-def get_place_photo_url(photo_reference, max_width=400):
+def get_place_photo_url(photo_reference, max_width=300, max_height=200):
     base_url = "https://maps.googleapis.com/maps/api/place/photo"
     params = {
         "maxwidth": max_width,
+        "maxheight": max_height,
         "photoreference": photo_reference,
         "key": GOOG_API_KEY
     }
-    response = requests.get(base_url, params=params)
-    return response.url
+    return f"{base_url}?{urllib.parse.urlencode(params)}"
 
 def get_business_image(place_data):
     '''
     From a place's data, returns an image link for the place
     '''
-    if 'photos' in place_data and place_data['photos']:
+    if place_data.get('photos'):
         photo_reference = place_data['photos'][0]['photo_reference']
         return get_place_photo_url(photo_reference)
-    return None  # Return None if no photo is available
-
+    return None
 def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
     """
     Calculate travel times from points A and B to multiple midpoints M using specified modes of transport.
