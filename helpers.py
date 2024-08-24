@@ -34,23 +34,17 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str):
         self.name = name
         self.address = address
         self.rating = rating
         self.total_ratings = total_ratings
         # This can potentially be empty - think of the consequences
         self.business_image_link = business_image_link
-        # currently open
-        self.currently_open = currently_open
-        # routes estimated time for both
-        # This can potentially be empty - think of the consequences
-        self.business_image_link = business_image_link
-        # routes estimated time for both
         # Get the google link
 
     def __repr__(self):
-        return f"Place(name={self.name}, address={self.address}, rating={self.rating}, total_ratings={self.total_ratings}, latitude={self.latitude}, longitude={self.longitude}, types={self.types})"
+        return f"Place(name={self.name}, address={self.address}, rating={self.rating}, total_ratings={self.total_ratings}, business_image_link={self.business_image_link})"
 
 # Helper functions
 def geocode(address):
@@ -212,7 +206,7 @@ def parse_places(json_data: str) -> List[Place]:
         link = get_business_image(result)
         
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, link, True)
+        place = Place(name, address, rating, total_ratings, link)
         places.append(place)
 
     return places
@@ -294,7 +288,8 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     
     # This will be dependant on travel options
     if mode_a == mode_b:
-        # We will use something which obtains a variety of points at the centre
+        # If the form of transport is roughly the same, then we can use the get_sq_midpoints function 
+        # which assumes the real closest point is the middle accounting for travel options
         midpoints = get_midpoints(geocoded_a, geocoded_b)
     else:
         midpoints = get_midpoints(geocoded_a, geocoded_b)
@@ -320,9 +315,7 @@ except ValueError as e:
 
 # make sure json loads into Place objects perfectly
 # Deal with route times from BOTH original locations (matrix?)
-
-# for i in locations["results"]:
-#     print(f'{i}')
+print([i for i in parse_places(locations)])
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
