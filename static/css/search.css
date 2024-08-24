@@ -27,6 +27,7 @@ body {
     font-weight: bold;
     color: #FF5F3f;
     font-size: 1.5rem;
+    text-decoration: none;
 }
 
 .topnav-right {
