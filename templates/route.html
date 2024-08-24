@@ -1,23 +1,54 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link rel="stylesheet" href="{{  url_for('static', filename='css/route.css'  )}}">
+<nav> 
+    <div class = "navbar">
+        <a href = "{{  url_for('index')}}">
+            <img src="{{url_for('static', filename='images/longlogo.png')}}" alt="logo" class="small-logo">
+        </a>
+        <div class = "topnav-right">
+            <ul> 
+            <li><a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a></li>
+        </div>
+    </div>
+</nav>
 {% endblock %}
+
 {% block body %}
-<h1>
-    Meet Me in the Middle
-</h1>
-<img src = "images/logo.png" class= "small-logo" id="small-logo">
-<button>
-    <a href = "{{  url_for('route')}}" class = "get-started" id="get-started">
-        Get Started!
-    </a>
-</button>
+<div>
+    <h1>
+        Meet Me in the Middle
+    </h1>
+    <img src = "images/logo.png" class= "small-logo" id="small-logo">
+    <button>
+        <a href = "{{  url_for('route')}}" class = "get-started" id="get-started">
+            Get Started!
+        </a>
+    </button>
+</div>
     {% if output %}
-        {% for place in output['results'] %}
-            {{ place['name'] }}
+    <div class = "grid-container">
+        <div class = "grid-items-locations">
+            <p>
+                Found these places for you to <strong>Meet in the Middle</strong>!
+            </p>
+            {% for place in output['results'] %}
+            <div class="location-display">
+                <img src="{{url_for('static', filename='icons/star.png')}}">
+                <p>{{place['rating']}}</p>
+                <p>ICON 1</p>
+                <p>OP1</p>
+                <p>ICON 2</p>
+                <p>{{place['name']}}</p>
+                <p>{{place['address']}}</p>
+            </div>
         {% endfor %} 
+    </div>
+    <div class = "grid-items-map"> 
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
+    </div>
     {% else %}
         <p>No results found.</p>
     {% endif %}
-
 {% endblock %}

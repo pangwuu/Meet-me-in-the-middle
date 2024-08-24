@@ -29,10 +29,6 @@ body {
     font-size: 1.5rem;
 }
 
-.topnav-left {
-    float : left;
-}
-
 .topnav-right {
     float : right;
     margin-right: 20px;
@@ -65,20 +61,7 @@ nav ul li + li {
     margin-left: 10px;
 } 
 
-/* Dropdown Menu Styles */
-.dropdown {
-    position: relative;
-    display: inline-block;
-    z-index: 1;
-}
-
-.service, .profile {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
+/* body */
 .outer-map{
     height: 90%;
     width: 100%;
