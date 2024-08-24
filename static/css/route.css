@@ -1,12 +1,16 @@
-/* navigation bar */
+/* Navigation Bar */
 .navbar {
     height: 40px;
     background-color: #f6f5f5;
-    padding : 15px 15px ;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align items to the ends */
 }
 
 .small-logo {
     height: 100%;
+    display: block;
 }
 
 .home {
@@ -17,43 +21,34 @@
 }
 
 .topnav-right {
-    float : right;
     margin-right: 20px;
 }
 
-nav ul { 
-    position: relative;
-    list-style: none; 
-    margin: 0; 
-    padding: 0; 
-} 
-   
-nav ul li { 
-    display: inline-block; 
-} 
-
-nav ul li a .logo {
-    font-size : 20px;
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Flexbox for horizontal list */
+    align-items: center; /* Align items vertically */
 }
-   
-nav ul li a { 
-    display: block; 
-    padding: 10px 17px;
-    text-decoration: none; 
-    font-size : 14px;
-    color : black;
-} 
-   
-nav ul li + li { 
-    margin-left: 10px;
-} 
 
-/* body */
-.grid-container{
-    display: inline-grid;
+nav ul li {
+    margin-left: 10px;
+}
+
+nav ul li a {
+    padding: 10px 17px;
+    text-decoration: none;
+    font-size: 14px;
+    color: black;
+}
+
+/* Grid Layout for Locations */
+.grid-container {
+    display: grid; /* Use grid display for layout */
     grid-template-columns: 1fr 1fr;
-    grid-gap: 0;
-    padding-left:100px;
+    grid-gap: 20px;
+    padding: 0 100px; /* Adjust padding for spacing */
 }
 
 .grid-items-locations {
@@ -62,18 +57,56 @@ nav ul li + li {
     overflow-y: scroll;
     background-color: white;
     border-radius: 10px;
+    padding: 15px;
+}
+
+.location-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 10px;
+    padding: 10px;
 }
 
 .main-map {
     border-radius: 10px;
 }
 
-.small-icon-a {
-    height: 20px;
-    widtH: 20px;
-}
-
-.small-icon-b {
+.small-icon-a, .small-icon-b {
     height: 20px;
     width: 20px;
+}
+
+/* Grid Items Layout */
+.grid-title {
+    grid-column: 1 / 2;
+}
+
+.grid-info {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.grid-image {
+    grid-column: 2;
+    grid-row: 2;
+    display: cover;
+}
+
+.place-img {
+    width: 100px;
+    height: 50px;
+}
+
+.grid-address {
+    grid-column: 1 / 2;
+    grid-row: 3;
+}
+
+/* Center Icons and Align Content */
+.grid-info, .grid-image, .grid-address {
+    display: flex;
+    align-items: center; /* Vertical alignment */
+    justify-content: center; /* Horizontal alignment */
+    text-align: center;
 }

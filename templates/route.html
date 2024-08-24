@@ -46,11 +46,11 @@
         <div class = "grid-container">
             <div class="grid-items-locations">
             {% for place in places %}
-                <div class = "location-display">
-                    <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}">
+                <div class = "grid-title">
                     <h3>{{ place.name }}</h3>
-                    <p><strong>Address:</strong> {{ place.address }}</p>
-                    <p class="rating"><strong>Rating:</strong> 
+                </div>
+                <div class = "grid-info">
+                    <p class="rating">
                         {% if place.rating %}
                             {{ place.rating }} / 5 ({{ place.total_ratings }} ratings)
                         {% else %}
@@ -59,10 +59,16 @@
                     </p>
                     <p class="time-info">
                         <img src={{a_icon}} alt="transporta" class="small-icon-a">
-                        <strong>Time from A:</strong> {{ place.time_from_a }} meters<br>
+                        {{ place.time_from_a }} meters<br>
                         <img src={{b_icon}} alt="transportb" class="small-icon-b">
-                        <strong>Time from B:</strong> {{ place.time_from_b }} meters
+                        {{ place.time_from_b }} meters
                     </p>
+                </div>
+                <div class = "grid-image">
+                    <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class = "place-img">
+                </div>
+                <div class = "grid-address">
+                    <p><strong>Address:</strong> {{ place.address }}</p>
                 </div>
                 {% endfor %}
             </div>
