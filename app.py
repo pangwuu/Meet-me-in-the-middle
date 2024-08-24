@@ -25,12 +25,12 @@ def search():
         error = None
 
         try:
-            results = helpers.get_middle_locations(locA, locB, transportA, transportB, place_type)
+            results = helpers.get_all_locations_classes(locA, locB, transportA, transportB, place_type)
 
         except ValueError as e:
             error = str(e)
 
-        return render_template('route.html', output=results, error=error)
+        return render_template('route.html', places=results, error=error, transport_a=transportA, transport_b=transportB)
 
     else:
         return render_template('search.html')

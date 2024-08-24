@@ -22,21 +22,34 @@
         {{ error}}
     {% endif %}
 
-    {% if output %}
-    <ul>
-        {% for place in output['results'] %}
-            <li>{{ place.name }}</li>
-            <li>{{ place.address }}</li>
-            <li>{{ place.rating }} ({{ place.total_ratings }})</li>
 
-            <img src = {{ place.business_image_link }}>
-        
-            <li>{{ place.time_from_a }}</li>
-            <li>{{ place.time_from_b }}</li>
-        {% endfor %} 
+    <!-- Variables in double {{ }} Below are the modes of transport the user chose -->
+    {{ transport_a }}
+    {{ transport_b }}
+    
+    {% if places %}
+        {% for place in places %}
+            <div class="result">
+                <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}">
+                <div>
+                    <h3>{{ place.name }}</h3>
+                    <p><strong>Address:</strong> {{ place.address }}</p>
+                    <p class="rating"><strong>Rating:</strong> 
+                        {% if place.rating %}
+                            {{ place.rating }} / 5 ({{ place.total_ratings }} ratings)
+                        {% else %}
+                            No ratings available
+                        {% endif %}
+                    </p>
+                    <p class="time-info">
+                        <strong>Time from A:</strong> {{ place.time_from_a }} meters<br>
+                        <strong>Time from B:</strong> {{ place.time_from_b }} meters
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
     {% else %}
         <p>No results found.</p>
     {% endif %}
-    </ul>
 
 {% endblock %}
