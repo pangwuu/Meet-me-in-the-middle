@@ -260,6 +260,10 @@ def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
 def get_embed_link(lat, lng):
     return f"https://www.google.com/maps/embed/v1/place?q={lat},{lng}&key={GOOG_API_KEY}"
 
+def create_embed_link_from_place(place_name):
+    return f"https://www.google.com/maps/embed/v1/place?q={place_name.replace(' ', '+')}&key=YOUR_API_KEY"
+
+
 def parse_places(json_data: str) -> List[Place]:
     """
     Function to parse JSON and create Place objects out of each of them.
@@ -285,9 +289,10 @@ def parse_places(json_data: str) -> List[Place]:
         location = result.get('geometry', {}).get('location', {})
         latitude = location.get('lat', 0.0)  # Default to 0.0 if not available
         longitude = location.get('lng', 0.0)  # Default to 0.0 if not available
+        embed_link = create_embed_link_from_place(name)
         
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, link, -1, -1, get_embed_link(latitude, longitude), latitude, longitude)
+        place = Place(name, address, rating, total_ratings, link, -1, -1, embed_link, latitude, longitude)
         places.append(place)
 
     return places
