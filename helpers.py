@@ -258,8 +258,6 @@ def parse_places(json_data: str, location_a: str, location_b: str, mode_a: str, 
     # Parse the JSON data
     dumped_data = json.dumps(json_data)
     data = json.loads(dumped_data)
-
-    print(data)
     
     # Extract places list
     results = data.get('results', [])
