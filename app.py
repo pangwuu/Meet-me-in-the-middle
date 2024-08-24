@@ -21,6 +21,7 @@ def search():
         transportB = request.form['transport2']
 
         place_type = request.form['places']
+        results = None
 
         try:
             results = helpers.get_middle_locations(locA, locB, transportA, transportB, place_type)
