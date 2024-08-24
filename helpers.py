@@ -39,15 +39,12 @@ class Place:
         self.rating = rating
         self.total_ratings = total_ratings
         # This can potentially be empty - think of the consequences
-        self.business_image_link = business_image_link 
+        self.business_image_link = business_image_link
         # currently open
         self.currently_open = currently_open
         # routes estimated time for both
-        # Get the google link
         # This can potentially be empty - think of the consequences
-        self.business_image_link = business_image_link 
-        # currently open
-        self.currently_open = currently_open
+        self.business_image_link = business_image_link
         # routes estimated time for both
         # Get the google link
 
@@ -172,6 +169,25 @@ def find_nearby_places(location, place_type, radius=100, max_results=10):
     
     return {"results": results[:max_results]}
 
+def get_place_photo_url(photo_reference, max_width=400):
+    base_url = "https://maps.googleapis.com/maps/api/place/photo"
+    params = {
+        "maxwidth": max_width,
+        "photoreference": photo_reference,
+        "key": GOOG_API_KEY
+    }
+    response = requests.get(base_url, params=params)
+    return response.url
+
+def get_business_image(place_data):
+    '''
+    From a place's data, returns an image link for the place
+    '''
+    if 'photos' in place_data and place_data['photos']:
+        photo_reference = place_data['photos'][0]['photo_reference']
+        return get_place_photo_url(photo_reference)
+    return None  # Return None if no photo is available
+
 # Step 2: Function to parse JSON and create Place objects
 def parse_places(json_data: str) -> List[Place]:
     """
@@ -192,13 +208,10 @@ def parse_places(json_data: str) -> List[Place]:
         address = result.get('formatted_address')
         rating = result.get('rating')
         total_ratings = result.get('user_ratings_total')
-        location = result.get('geometry', {}).get('location', {})
-        latitude = location.get('lat')
-        longitude = location.get('lng')
-        types = result.get('types', [])
+        link = get_business_image(result)
         
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, latitude, longitude, types)
+        place = Place(name, address, rating, total_ratings, link, True)
         places.append(place)
 
     return places
@@ -240,25 +253,6 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
         raise ValueError("Best location could not be found")
     nearby = find_nearby_places(best, location_type)
     return nearby
-
-def get_place_photo_url(photo_reference, max_width=400):
-    base_url = "https://maps.googleapis.com/maps/api/place/photo"
-    params = {
-        "maxwidth": max_width,
-        "photoreference": photo_reference,
-        "key": GOOG_API_KEY
-    }
-    response = requests.get(base_url, params=params)
-    return response.url
-
-def get_business_image(place_data):
-    '''
-    From a place's data, returns an image link for the place
-    '''
-    if 'photos' in place_data and place_data['photos']:
-        photo_reference = place_data['photos'][0]['photo_reference']
-        return get_place_photo_url(photo_reference)
-    return None  # Return None if no photo is available
 
 try:
     locations = get_middle_locations("Fisher library University of Sydney", "Castle towers", "driving", "driving")
