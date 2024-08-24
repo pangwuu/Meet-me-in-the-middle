@@ -1,37 +1,12 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script>
-    let autocomplete;
-    function initAutocomplete() {
-        autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById('autocomplete'),
-            {
-                types: ['establishment'],
-                componentRestrictions: {'country' : ['AU']},
-                fields: ['place_id', 'geometry', 'name']
-            });
-
-        autocomplete.addListener('place_changed', onPlaceChanged);
-    }
-
-    function onPlaceChanged() {
-        var place = autocomplete.getPlace();
-
-        if (!place.geometry){
-            // User did not select a prediction; reset the input field
-            document.getElementById('autocomplete').placeholder = 'Enter a Place';
-        } else {
-            document.getElementById('details').innerHTML = place.name;
-        }
-    }
-</script>
 
 <link rel="stylesheet" href="{{  url_for('static', filename='css/search.css'  )}}">
 <nav> 
     <div class = "navbar">
         <a href = "{{  url_for('index')}}">
-            <img src="{{url_for('static', filename='images/logo.png')}}" alt="logo" class="small-logo">
+            <img src="{{url_for('static', filename='images/longlogo.png')}}" alt="logo" class="small-logo">
         </a>
         <div class = "topnav-right">
             <ul> 
@@ -42,7 +17,7 @@
 {% endblock %}
 
 {% block body %}
-<form action="/search" method="post">
+<form action="/search" method="post" class="outer-map">
     <div class="main-map" id="main-map">
         <div class="add-location" id="add-location">
             <div class="location-header">

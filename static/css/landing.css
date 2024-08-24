@@ -3,6 +3,7 @@ body {
     background-position: center;
     margin: 0;
     height: 100vh;
+    background-color: rgba(251, 251, 251, 0.4); /* Change the color and opacity as needed */
 }
 
 .container {
@@ -21,7 +22,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0.3;
+    opacity: 0.2;
     z-index: -1;
     object-fit: cover;
 }
@@ -57,13 +58,11 @@ body {
     border-radius: 35px;
     border: none;
     background-color: #FF5F3f;
-    transition: left 0.25s, right 0.25s, background-color 0.25s;
+    transition: background-color 0.1s;
 }
 
 .get-started:hover {
-    background-color: #ff441e;
-    width: 330px;
-    height: 75px;
+    background-color: #c92200;
 }
 
 .get-started-link, .get-started-link:hover {
