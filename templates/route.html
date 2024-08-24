@@ -16,23 +16,38 @@
 {% endblock %}
 
 {% block body %}
-<h1>
-    Meet Me in the Middle
-</h1>
-<img src = "{{url_for('static', filename='images/logo.png')}}" class= "small-logo" id="small-logo">
 
     {% if error %}
         {{ error}}
     {% endif %}
 
-    {{ transport_a }}
-    {{ transport_b }}
+    {% if transport_a == "driving" %}
+        {% set a_icon = "./static/icons/car-solid.svg" %}
+    {% elif transport_a == "walking" %}
+        {% set a_icon = "./static/icons/walking-solid.svg" %}
+    {% elif transport_a == "bicycling" %}
+        {% set a_icon = "./static/icons/bicycle-solid.svg" %}
+    {% elif transport_a == "transit" %}
+        {% set a_icon = "./static/icons/train-subway-solid.svg" %}
+    {% endif %}
     
+
+    {% if transport_b == "driving" %}
+        {% set b_icon = "./static/icons/car-solid.svg" %}
+    {% elif transport_b == "walking" %}
+        {% set b_icon = "./static/icons/walking-solid.svg" %}
+    {% elif transport_b == "bicycling" %}
+        {% set b_icon = "./static/icons/bicycle-solid.svg" %}
+    {% elif transport_b == "transit" %}
+        {% set b_icon = "./static/icons/train-subway-solid.svg" %}
+    {% endif %}
+
     {% if places %}
-        {% for place in places %}
-            <div class="result">
-                <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}">
-                <div>
+        <div class = "grid-container">
+            <div class="grid-items-locations">
+            {% for place in places %}
+                <div class = "location-display">
+                    <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}">
                     <h3>{{ place.name }}</h3>
                     <p><strong>Address:</strong> {{ place.address }}</p>
                     <p class="rating"><strong>Rating:</strong> 
@@ -43,12 +58,19 @@
                         {% endif %}
                     </p>
                     <p class="time-info">
+                        <img src={{a_icon}} alt="transporta" class="small-icon-a">
                         <strong>Time from A:</strong> {{ place.time_from_a }} meters<br>
+                        <img src={{b_icon}} alt="transportb" class="small-icon-b">
                         <strong>Time from B:</strong> {{ place.time_from_b }} meters
                     </p>
                 </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+
+            <div class = "grid-items-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13248.938434435806!2d151.18500284100202!3d-33.883611176409254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b1d4ab9ef1d9%3A0x1d017d69037a07c0!2sThe%20University%20of%20Sydney!5e0!3m2!1sen!2sau!4v1724478106864!5m2!1sen!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
+            </div>
+        </div>
     {% else %}
         <p>No results found.</p>
     {% endif %}

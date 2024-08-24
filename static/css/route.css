@@ -67,3 +67,13 @@ nav ul li + li {
 .main-map {
     border-radius: 10px;
 }
+
+.small-icon-a {
+    height: 20px;
+    widtH: 20px;
+}
+
+.small-icon-b {
+    height: 20px;
+    width: 20px;
+}
