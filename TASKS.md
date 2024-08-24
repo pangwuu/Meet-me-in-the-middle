@@ -9,7 +9,7 @@ Website
 
 1. Get both locations
 2. Convert both locations to coordinates A and B (geocode)
-3. Get 3 (or some other number) points which divide A and B like this using cartesian coordinates
+3. Get 5 (or some other number) points which divide A and B like this using cartesian coordinates
 A----M----B
 A--M------B
 A------M--B

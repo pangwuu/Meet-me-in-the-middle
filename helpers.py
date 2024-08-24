@@ -257,6 +257,8 @@ def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
 
     return times_a_to_m, times_b_to_m
 
+def get_embed_link(lat, lng):
+    return f"https://www.google.com/maps/embed/v1/place?q={lat},{lng}&key={GOOG_API_KEY}"
 
 def parse_places(json_data: str) -> List[Place]:
     """
@@ -285,7 +287,7 @@ def parse_places(json_data: str) -> List[Place]:
         longitude = location.get('lng', 0.0)  # Default to 0.0 if not available
         
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, link, -1, -1, '', latitude, longitude)
+        place = Place(name, address, rating, total_ratings, link, -1, -1, get_embed_link(latitude, longitude), latitude, longitude)
         places.append(place)
 
     return places
@@ -379,9 +381,6 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     nearby = find_nearby_places(best, location_type, max_results=5)
     return nearby
 
-def get_embed_link(lat_lng):
-    return f"https://www.google.com/maps/embed/v1/place?q={lat_lng}&key={GOOG_API_KEY}"
-
 def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
     
     a_to_m, b_to_m = get_travel_times_matrix(location_a, location_b, locations_classes, mode_a, mode_b)
@@ -389,7 +388,6 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
     for n in range(len(locations_classes)):
         locations_classes[n].time_from_a = a_to_m[n]
         locations_classes[n].time_from_b = b_to_m[n]
-        locations_classes[n].embed_link = locations_classes[n].address
         
     return locations_classes
 
@@ -411,10 +409,6 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
     locations_classes = parse_places(get_middle_locations(location_a, location_b , mode_a, mode_b, location_type))
     updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
     sorted_places = sorted(updated_locations_classes, key=lambda place: abs(place.time_from_a - place.time_from_b))
-
+    for i in sorted_places:
+        print(i.embed_link)
     return sorted_places
-
-def get_embed_link(lat_lng):
-    return f"https://www.google.com/maps/embed/v1/place?q={lat_lng}&key={GOOG_API_KEY}"
-
-print(get_embed_link(geocode("435 Crown St, Surry Hills NSW 2010")))
