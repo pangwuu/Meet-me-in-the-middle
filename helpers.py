@@ -197,6 +197,7 @@ def get_business_image(place_data):
         photo_reference = place_data['photos'][0]['photo_reference']
         return get_place_photo_url(photo_reference)
     return None
+
 def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
     """
     Calculate travel times from points A and B to multiple midpoints M using specified modes of transport.
@@ -351,18 +352,17 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     if geocoded_b is None:
         raise ValueError("Location b could not be geocoded")
     
-    # This will be dependant on travel options
     if mode_a == mode_b:
-        # If the form of transport is roughly the same, then we can use the get_sq_midpoints function 
-        # which assumes the real closest point is the middle accounting for travel options
         midpoints = get_midpoints(geocoded_a, geocoded_b)
     else:
-        midpoints = get_midpoints(geocoded_a, geocoded_b)
+        midpoints = get_midpoints(geocoded_a, geocoded_b, num_points=10)
     
+    if midpoints is None:
+        raise ValueError
     best = find_best_midpoint(geocoded_a, geocoded_b, midpoints, mode_a, mode_b)
     if best is None:
         raise ValueError("Best location could not be found")
-    nearby = find_nearby_places(best, location_type)
+    nearby = find_nearby_places(best, location_type, max_results=6)
     return nearby
 
 def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
@@ -379,9 +379,7 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
     # try:
     #     # a = time.time()
-    a = time.time()
     locations_dict = get_middle_locations(location_a, location_b , mode_a, mode_b)
-    b = time.time()
     #     # b = time.time()
     # except ValueError as e:
     #     if str(e) == "Location a could not be geocoded":
@@ -396,12 +394,7 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
 
     locations_classes = parse_places(locations_dict)
 
-    c = time.time()
     updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
-    d = time.time()
+    sorted_places = sorted(updated_locations_classes, key=lambda place: abs(place.time_from_a - place.time_from_b))
 
-    print(f"Time taken from a to b: {b - a}")
-    print(f"Time taken from b to c: {c - b}")
-    print(f"Time taken from c to d: {d - c}")
-
-    return updated_locations_classes
+    return sorted_places
