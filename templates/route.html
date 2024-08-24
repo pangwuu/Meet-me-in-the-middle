@@ -1,23 +1,31 @@
 {% extends "base.html" %}
 
 {% block head %}
+<nav> 
+    <div class = "navbar">
+        <a href = "{{  url_for('index')}}">
+            <img src="{{url_for('static', filename='images/longlogo.png')}}" alt="logo" class="small-logo">
+        </a>
+        <div class = "topnav-right">
+            <a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a>
+        </div>
+    </div>
+</nav>
 {% endblock %}
 {% block body %}
 <h1>
     Meet Me in the Middle
 </h1>
-<img src = "images/logo.png" class= "small-logo" id="small-logo">
-<button>
-    <a href = "{{  url_for('route')}}" class = "get-started" id="get-started">
-        Get Started!
-    </a>
-</button>
+<img src = "{{url_for('static', filename='images/logo.png')}}" class= "small-logo" id="small-logo">
+
     {% if output %}
+    <ul>
         {% for place in output['results'] %}
-            {{ place['name'] }}
+            <li>{{ place['name'] }}</li>
         {% endfor %} 
     {% else %}
         <p>No results found.</p>
     {% endif %}
+    </ul>
 
 {% endblock %}

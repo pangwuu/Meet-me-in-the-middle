@@ -20,18 +20,20 @@ def search():
         transportA = request.form['transport']
         transportB = request.form['transport2']
 
+        place_type = request.form['places']
+
         # TOADD: dealing with specific ideas like cafe etc
-        results = helpers.get_middle_locations(locA, locB, transportA, transportB)
+        results = helpers.get_middle_locations(locA, locB, transportA, transportB, place_type)
         return render_template('route.html', output=results)
 
     else:
         return render_template('search.html')
 
 # Route for results page
-@app.route('/route')
-def route():
-    results = request.args.get('results')
-    return render_template('route.html', output=results)
+# @app.route('/route')
+# def route():
+#     results = request.args.get('results')
+#     return render_template('route.html', output=results)
 
 if __name__ == "__main__":
     app.run(debug=True)
