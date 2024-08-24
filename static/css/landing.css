@@ -1,5 +1,4 @@
 body { 
-    background-image: url("{{ url_for('static', filename='images/map.png') }}");
     background-size: cover;
     background-position: center;
     margin: 0;
@@ -24,6 +23,7 @@ body {
     left: 0;
     opacity: 0.3;
     z-index: -1;
+    object-fit: cover;
 }
 
 .content {
@@ -57,7 +57,7 @@ body {
     border-radius: 35px;
     border: none;
     background-color: #FF5F3f;
-    transition: left 0.25s, right 0.25s,  background-color 0.25s;
+    transition: left 0.25s, right 0.25s, background-color 0.25s;
 }
 
 .get-started:hover {
