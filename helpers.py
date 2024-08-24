@@ -6,6 +6,7 @@ from typing import List
 import json
 from geopy.distance import distance
 import requests
+import math, random
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -215,6 +216,56 @@ def parse_places(json_data: str) -> List[Place]:
         places.append(place)
 
     return places
+
+
+def get_midpoints_around_midpoint(coord_a, coord_b, num_points=10, radius_ratio=0.1):
+    """
+    Returns num_points (10 as default) points within a radius around the midpoint
+    between coord_a and coord_b, with the radius being a percentage of the direct
+    distance between the two points.
+
+    This does NOT use any APIs and is a straight line distance, like ratio division.
+
+    Params:
+        coord_a, coord_b (str): The locations you wish to find the midpoints from.
+        num_points (int): The number of points to generate.
+        radius_ratio (float): The radius as a percentage of the direct distance between the points.
+
+    Returns:
+        midpoints (List[str]): A list of midpoints each consisting of a
+        string that contains the latitude and longitude of each location.
+    """
+    lat_a, lng_a = map(float, coord_a.split(','))
+    lat_b, lng_b = map(float, coord_b.split(','))
+    
+    # Calculate the midpoint
+    mid_lat = (lat_a + lat_b) / 2
+    mid_lng = (lng_a + lng_b) / 2
+    
+    # Calculate the distance between the two points
+    dist_lat = lat_b - lat_a
+    dist_lng = lng_b - lng_a
+    distance = math.sqrt(dist_lat ** 2 + dist_lng ** 2)
+    
+    # Radius of the circle around the midpoint
+    radius = radius_ratio * distance
+    
+    midpoints = []
+    
+    for _ in range(num_points):
+        # Random angle in radians
+        angle = random.uniform(0, 2 * math.pi)
+        # Random distance from midpoint within the radius
+        random_distance = random.uniform(0, radius)
+        
+        # Calculate the new point
+        lat_m = mid_lat + random_distance * math.cos(angle)
+        lng_m = mid_lng + random_distance * math.sin(angle)
+        
+        midpoints.append(f"{lat_m},{lng_m}")
+    
+    return midpoints
+    
 
 def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
     """
@@ -442,5 +493,9 @@ for i in locations["results"]:
 #         ]
 #     })
 
+# # if __name__ == '__main__':
+# #     with app.app_context():
+# #         db.create_all()
+# #     app.run(debug=True)
 # if __name__ == '__main__':
 #     print(get_equidistant_points_around_midpoint(geocode("Manly Vale"), geocode("Epping"), 5))
