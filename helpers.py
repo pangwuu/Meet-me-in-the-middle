@@ -22,6 +22,7 @@ class Meeting(db.Model):
     """
     Holds a meeting object, which stores both locations, 
     both forms of transport, as well as an oprional meeting point and place type
+    both forms of transport, as well as an oprional meeting point and place type
     """
     id = db.Column(db.Integer, primary_key=True)
     location_a = db.Column(db.String(100))
@@ -33,10 +34,17 @@ class Meeting(db.Model):
 
 class Place:
     def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
         self.name = name
         self.address = address
         self.rating = rating
         self.total_ratings = total_ratings
+        # This can potentially be empty - think of the consequences
+        self.business_image_link = business_image_link 
+        # currently open
+        self.currently_open = currently_open
+        # routes estimated time for both
+        # Get the google link
         # This can potentially be empty - think of the consequences
         self.business_image_link = business_image_link 
         # currently open
@@ -86,6 +94,36 @@ def get_midpoints(coord_a, coord_b, num_points=10):
     
     return midpoints
 
+def get_sq_midpoints(coord_a, coord_b, num_points=10):
+    """
+    Returns num_points (10 as default) points equidistant to each other, 
+    along the way from 25% to 75% of the route between coord_a and coord_b.
+
+    This does NOT use any APIs and is a straight line distance, like ratio division.
+
+    Params:
+        coord_a, coord_b (str): The locations you wish to find the midpoints from
+    
+    Returns:
+        midpoints (List[str]): A list of midpoints each consisting of a
+        string that contains the latitude and longitude of each location
+    """
+    lat_a, lng_a = map(float, coord_a.split(','))
+    lat_b, lng_b = map(float, coord_b.split(','))
+    
+    midpoints = []
+    start_ratio = 0.25
+    end_ratio = 0.75
+    
+    for i in range(1, num_points + 1):
+        # Calculate the ratio within the specified range (25% to 75%)
+        ratio = start_ratio + (end_ratio - start_ratio) * (i / (num_points + 1))
+        lat_m = lat_a + ratio * (lat_b - lat_a)
+        lng_m = lng_a + ratio * (lng_b - lng_a)
+        midpoints.append(f"{lat_m},{lng_m}")
+    
+    return midpoints
+
 def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     """
     Returns the midpoint that minimises the travel time difference from both coordinates.
@@ -101,14 +139,8 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     
     # Distance matrix code found here:
     # https://github.com/googlemaps/google-maps-services-python/blob/master/googlemaps/distance_matrix.py
-    try:
-        matrix_a = gmaps.distance_matrix(origins=[coord_a], destinations=midpoints, mode=mode_a)
-    except ValueError:
-        return None
-    try:
-        matrix_b = gmaps.distance_matrix(origins=[coord_b], destinations=midpoints, mode=mode_b)
-    except ValueError:
-        return None        
+    matrix_a = gmaps.distance_matrix(origins=[coord_a], destinations=midpoints, mode=mode_a)
+    matrix_b = gmaps.distance_matrix(origins=[coord_b], destinations=midpoints, mode=mode_b)
     
     min_diff = float('inf')
     best_midpoint = None
@@ -133,15 +165,12 @@ def find_nearby_places(location, place_type, radius=100, max_results=10):
     places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
     results = places.get('results', [])
     
-    # Continue searching until at least 3 results are found
-    while len(results) < 3 and len(results) < max_results:
-        radius *= 1.5  # Increase the radius to expand the search area
+    while len(results) < max_results and radius <= 2000:
+        radius *= 2
         places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
-        new_results = places.get('results', [])
-        results.extend(new_results)
-        # Remove duplicates
-        results = list({place['place_id']: place for place in results}.values())
-
+        results.extend(places.get('results', []))
+        results = list({place['place_id']: place for place in results}.values())  # Remove duplicates
+    
     return {"results": results[:max_results]}
 
 # Step 2: Function to parse JSON and create Place objects
@@ -191,13 +220,20 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
         A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
         Each result is a location.
     """
-
     geocoded_a = geocode(location_a)
     if geocoded_a is None:
         raise ValueError("Location a could not be geocoded")
     geocoded_b = geocode(location_b)
     if geocoded_b is None:
         raise ValueError("Location b could not be geocoded")
+    
+    # This will be dependant on travel options
+    if mode_a == mode_b:
+        # We will use something which obtains a variety of points at the centre
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    else:
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    
     
     # This will be dependant on travel options
     if mode_a == mode_b:
@@ -419,7 +455,5 @@ for i in locations["results"]:
 #         ]
 #     })
 
-# # if __name__ == '__main__':
-# #     with app.app_context():
-# #         db.create_all()
-# #     app.run(debug=True)
+if __name__ == '__main__':
+    print(get_equidistant_points_around_midpoint(geocode("Manly Vale"), geocode("Epping"), 5))
