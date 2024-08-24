@@ -5,6 +5,7 @@ import googlemaps
 from typing import List
 import json
 from geopy.distance import distance
+import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -20,8 +21,7 @@ gmaps = googlemaps.Client(key=GOOG_API_KEY)
 class Meeting(db.Model):
     """
     Holds a meeting object, which stores both locations, 
-    both forms of transport,
-    as well as an oprional meeting point and place type
+    both forms of transport, as well as an oprional meeting point and place type
     """
     id = db.Column(db.Integer, primary_key=True)
     location_a = db.Column(db.String(100))
@@ -32,14 +32,17 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, latitude: float, longitude: float, types: List[str]):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool, ):
         self.name = name
         self.address = address
         self.rating = rating
         self.total_ratings = total_ratings
-        self.latitude = latitude
-        self.longitude = longitude
-        self.types = types
+        # This can potentially be empty - think of the consequences
+        self.business_image_link = business_image_link 
+        # currently open
+        self.currently_open = currently_open
+        # routes estimated time for both
+        # Get the google link
 
     def __repr__(self):
         return f"Place(name={self.name}, address={self.address}, rating={self.rating}, total_ratings={self.total_ratings}, latitude={self.latitude}, longitude={self.longitude}, types={self.types})"
@@ -172,7 +175,7 @@ def parse_places(json_data: str) -> List[Place]:
 
     return places
 
-def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
+def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
     """
     A combination of all the above helper functions to locate 10
     places roughly equidistant in travel time between the two original locations,
@@ -187,7 +190,6 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     Returns:
         A dictionary with {'results': [{Result 1}, {Result 2}...]}. 
         Each result is a location.
-    
     """
 
     geocoded_a = geocode(location_a)
@@ -196,17 +198,57 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     geocoded_b = geocode(location_b)
     if geocoded_b is None:
         raise ValueError("Location b could not be geocoded")
-    midpoints = get_midpoints(geocoded_a, geocoded_b)
+    
+    # This will be dependant on travel options
+    if mode_a == mode_b:
+        # We will use something which obtains a variety of points at the centre
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    else:
+        midpoints = get_midpoints(geocoded_a, geocoded_b)
+    
     best = find_best_midpoint(geocoded_a, geocoded_b, midpoints, mode_a, mode_b)
     if best is None:
         raise ValueError("Best location could not be found")
     nearby = find_nearby_places(best, location_type)
     return nearby
 
-locations = get_middle_locations("Burwood Sydney", "Burwood Victoria 3125", "driving", "driving", "cafe")
-print(type(locations['results'][0]))
-for i in parse_places(locations):
-    print(i)
+def get_place_photo_url(photo_reference, max_width=400):
+    base_url = "https://maps.googleapis.com/maps/api/place/photo"
+    params = {
+        "maxwidth": max_width,
+        "photoreference": photo_reference,
+        "key": GOOG_API_KEY
+    }
+    response = requests.get(base_url, params=params)
+    return response.url
+
+def get_business_image(place_data):
+    '''
+    From a place's data, returns an image link for the place
+    '''
+    if 'photos' in place_data and place_data['photos']:
+        photo_reference = place_data['photos'][0]['photo_reference']
+        return get_place_photo_url(photo_reference)
+    return None  # Return None if no photo is available
+
+try:
+    locations = get_middle_locations("Fisher library University of Sydney", "Castle towers", "driving", "driving")
+except ValueError as e:
+    if str(e) == "Location a could not be geocoded":
+        print("Could not geocode location A")
+    elif str(e) == "Location b could not be geocoded":
+        print("Could not geocode location B")
+    elif str(e) == "Best location could not be found":
+        print("Could not find a best location")
+    else:
+        # Re-raise the exception if it's not one of the expected messages
+        raise
+
+# make sure json loads into Place objects perfectly
+# Deal with route times from BOTH original locations (matrix?)
+
+for i in locations["results"]:
+    print(f'{get_business_image(i)}')
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
