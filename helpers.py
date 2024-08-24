@@ -8,6 +8,8 @@ from geopy.distance import distance
 import requests
 import math, random
 import time
+import aiohttp
+import asyncio
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -63,7 +65,7 @@ def geocode(address):
         return f"{location['lat']},{location['lng']}"
     return None
 
-def get_midpoints(coord_a, coord_b, num_points=10):
+def get_midpoints(coord_a, coord_b, num_points=3):
     """
     Returns num_points (10 as default) points equidistant to each other, 
     along the way from coord_a and coord_b.
@@ -160,7 +162,7 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     
     return best_midpoint
     
-def find_nearby_places(location, place_type, radius=100, max_results=10):
+def find_nearby_places(location, place_type, radius=100, max_results=3):
     """
     Returns a group of max_results nearby places to a certain coordinate.
 
@@ -195,6 +197,32 @@ def get_business_image(place_data):
         photo_reference = place_data['photos'][0]['photo_reference']
         return get_place_photo_url(photo_reference)
     return None  # Return None if no photo is available
+
+async def get_place_photo_url_async(session, photo_reference, max_width=400):
+    base_url = "https://maps.googleapis.com/maps/api/place/photo"
+    params = {
+        "maxwidth": max_width,
+        "photoreference": photo_reference,
+        "key": GOOG_API_KEY
+    }
+    async with session.get(base_url, params=params) as response:
+        return response.url
+
+async def get_business_image_async(session, place_data):
+    '''
+    From a place's data, returns an image link for the place asynchronously
+    '''
+    if 'photos' in place_data and place_data['photos']:
+        photo_reference = place_data['photos'][0]['photo_reference']
+        return await get_place_photo_url_async(session, photo_reference)
+    return None  # Return None if no photo is available
+
+async def fetch_all_image_urls(places_data):
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for place in places_data:
+            tasks.append(get_business_image_async(session, place))
+        return await asyncio.gather(*tasks)
 
 def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
     """
@@ -249,7 +277,7 @@ def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
 
 
 # Step 2: Function to parse JSON and create Place objects
-def parse_places(json_data: str, location_a: str, location_b: str, mode_a: str, mode_b: str) -> List[Place]:
+def parse_places(json_data: str) -> List[Place]:
     """
     Function to parse JSON and create Place objects out of each of them
     """
@@ -378,7 +406,9 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
     # try:
     #     # a = time.time()
+    a = time.time()
     locations_dict = get_middle_locations(location_a, location_b , mode_a, mode_b)
+    b = time.time()
     #     # b = time.time()
     # except ValueError as e:
     #     if str(e) == "Location a could not be geocoded":
@@ -392,6 +422,13 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
     #         raise
 
     locations_classes = parse_places(locations_dict)
+
+    c = time.time()
     updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
+    d = time.time()
+
+    print(f"Time taken from a to b: {b - a}")
+    print(f"Time taken from b to c: {c - b}")
+    print(f"Time taken from c to d: {d - c}")
 
     return updated_locations_classes
