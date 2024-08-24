@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
 db = SQLAlchemy(app)
 
 # APIKEY
-GOOG_API_KEY = "AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI"
+GOOG_API_KEY = os.environ.get("GOOG_API_KEY")
 
 # Initialize Google Maps client
 gmaps = googlemaps.Client(key=GOOG_API_KEY)
