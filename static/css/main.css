@@ -1,18 +1,23 @@
-/* CSS Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 /* Basic styling for body */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #9fd8ec;
+    color: #FF5F3f;
     line-height: 1.6;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    align-items: center;
 }
 
+.mainbody {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    display: block;
+    overflow: hidden;
+}
 /* Container to center content */
 .container {
     max-width: 1200px;
@@ -22,7 +27,7 @@ body {
 
 /* Header styling */
 header {
-    background-color: #007BFF;
+    background-color: #FF5F3f;
     color: white;
     padding: 15px 0;
     text-align: center;
@@ -34,6 +39,33 @@ main {
     padding: 20px;
     margin: 20px 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.get-started { 
+    position: relative;
+    justify-content: center;
+    display: flex;
+    display: block;
+    margin: auto;
+    width: 300px;
+    height: 70px;
+    border-radius: 35px;
+    border: none;
+    background-color: #FF5F3f;
+    transition: width 0.25s, height 0.25s, background-color 0.25s;
+    transform-origin: 50% 50%;
+}
+
+.get-started:hover {
+    background-color: #ff441e;
+    width: 330px;
+    height: 75px;
+}
+
+.get-started-link, .get-started-link:hover {
+    color: #fff;
+    font-size: 40px;
+    text-decoration: None;
 }
 
 /* Footer styling */

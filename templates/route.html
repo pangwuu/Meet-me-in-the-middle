@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+{% block body %}
+<h1>
+    Meet Me in the Middle
+</h1>
+<img src = "images/logo.png" class= "small-logo" id="small-logo">
+<button>
+    <a href = "{{  url_for('route')}}" class = "get-started" id="get-started">
+        Get Started!
+    </a>
+</button>
+
+{% endblock %}

@@ -5,11 +5,14 @@
     Meet Me in the Middle
 </h1>
 {% endblock %}
-
 {% block body %}
-<img src = "images/logo.png" class= "small-logo" id="small-logo">
-<button href = "search.html" class = "get-started" id="get-started">
-    Get Started!
-</button>
+<div class = "mainbody"></div>
+    <img src = "images/logo.png" class= "small-logo" id="small-logo">
+    <button class = "get-started">
+        <a href = "{{  url_for('search')}}" class = "get-started-link" id="get-started">
+            Get Started!
+        </a>
+    </button>
+</div>
 
 {% endblock %}
