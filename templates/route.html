@@ -1,29 +1,21 @@
 {% extends "base.html" %}
 
 {% block head %}
-<<<<<<< HEAD
 <link rel="stylesheet" href="{{  url_for('static', filename='css/route.css'  )}}">
-=======
->>>>>>> 1d07499078938ab0bef9fda23503b0c5707653d1
 <nav> 
     <div class = "navbar">
         <a href = "{{  url_for('index')}}">
             <img src="{{url_for('static', filename='images/longlogo.png')}}" alt="logo" class="small-logo">
         </a>
         <div class = "topnav-right">
-<<<<<<< HEAD
             <ul> 
             <li><a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a></li>
-=======
-            <a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a>
->>>>>>> 1d07499078938ab0bef9fda23503b0c5707653d1
         </div>
     </div>
 </nav>
 {% endblock %}
 
 {% block body %}
-<<<<<<< HEAD
 <div>
     <h1>
         Meet Me in the Middle
@@ -51,28 +43,6 @@
                 <p>{{place['name']}}</p>
                 <p>{{place['address']}}</p>
             </div>
-=======
-<h1>
-    Meet Me in the Middle
-</h1>
-<img src = "{{url_for('static', filename='images/logo.png')}}" class= "small-logo" id="small-logo">
-
-    {% if error %}
-        {{ error}}
-    {% endif %}
-
-    {% if output %}
-    <ul>
-        {% for place in output['results'] %}
-            <li>{{ place.name }}</li>
-            <li>{{ place.address }}</li>
-            <li>{{ place.rating }} ({{ place.total_ratings }})</li>
-
-            <img src = {{ place.business_image_link }}>
-        
-            <li>{{ place.time_from_a }}</li>
-            <li>{{ place.time_from_b }}</li>
->>>>>>> 1d07499078938ab0bef9fda23503b0c5707653d1
         {% endfor %} 
     </div>
     <div class = "grid-items-map"> 
@@ -81,9 +51,4 @@
     {% else %}
         <p>No results found.</p>
     {% endif %}
-<<<<<<< HEAD
-=======
-    </ul>
-
->>>>>>> 1d07499078938ab0bef9fda23503b0c5707653d1
 {% endblock %}
