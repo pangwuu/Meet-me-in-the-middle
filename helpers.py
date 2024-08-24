@@ -141,21 +141,6 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     best_midpoint = None
     
     for i, midpoint in enumerate(midpoints):
-
-        # element_a = matrix_a['rows'][0]['elements'][i]
-        # element_b = matrix_b['rows'][0]['elements'][i]
-
-        # # Check if a route was found
-        # if element_a['status'] == 'OK':
-        #     times_a_to_m.append(element_a['duration']['value'])
-        # else:
-        #     times_a_to_m.append(None)  # or you could use a large number like float('inf')
-
-        # if element_b['status'] == 'OK':
-        #     times_b_to_m.append(element_b['duration']['value'])
-        # else:
-        #     times_b_to_m.append(None)  # or you could use a large number like float('inf')
-
         element_a = matrix_a['rows'][0]['elements'][i]
         element_b = matrix_b['rows'][0]['elements'][i]
         if element_a['status'] == 'OK':
@@ -174,59 +159,6 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
             best_midpoint = midpoint
     
     return best_midpoint
-
-# def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
-#     """
-#     Calculate travel times from points A and B to multiple midpoints M using specified modes of transport.
-    
-#     :param a: Starting point A (string address or lat,lng)
-#     :param b: Starting point B (string address or lat,lng)
-#     :param m_list: List of midpoints M (list of string addresses or lat,lng)
-#     :param mode_a: Mode of transport from A to M (string: 'driving', 'walking', 'bicycling', or 'transit')
-#     :param mode_b: Mode of transport from B to M (string: 'driving', 'walking', 'bicycling', or 'transit')
-#     :return: Two lists of travel times in seconds (times_a_to_m, times_b_to_m)
-#     """
-#     # Step 1: Geocode all addresses
-#     c = time.time()
-#     geocoded_a = geocode(a)
-#     geocoded_b = geocode(b)
-#     geocoded_m_list = [geocode(m) for m in m_list]
-#     d = time.time()
-#     print(d - c)
-
-
-#     # Step 2: Use Distance Matrix API for A to all M
-#     matrix_a = gmaps.distance_matrix(
-#         origins=[geocoded_a],
-#         destinations=geocoded_m_list,
-#         mode=mode_a
-#     )
-
-#     print(matrix_a)
-
-#     # Step 3: Use Distance Matrix API for B to all M
-#     matrix_b = gmaps.distance_matrix(
-#         origins=[geocoded_b],
-#         destinations=geocoded_m_list,
-#         mode=mode_b
-#     )
-
-#     print(matrix_b)
-
-#     # Step 4: Extract travel times
-#     times_a_to_m = []
-#     times_b_to_m = []
-
-#     print("Hio")
-    
-
-#     for i in range(len(geocoded_m_list)):
-#         time_a = matrix_a['rows'][0]['elements'][i]['duration']['value']
-#         time_b = matrix_b['rows'][0]['elements'][i]['duration']['value']
-#         times_a_to_m.append(time_a)
-#         times_b_to_m.append(time_b)
-
-#     return times_a_to_m, times_b_to_m
     
 def find_nearby_places(location, place_type, radius=100, max_results=10):
     """
