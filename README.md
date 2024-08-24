@@ -26,11 +26,7 @@ cd midpoint-finder
 ```
 2. Install Required Dependencies: Ensure you have Python installed (preferably version 3.7 or higher). Install Flask and other dependencies via pip.
 ```
-pip install flask
-pip install flask sqlalchemy
-pip install googlemaps
-pip install geopy
-pip install urllib
+pip install requirements.txt
 ```
 3. Set Up Your Google Maps API Key: Obtain an API key from the [Google Cloud Platform](https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-AU-all-en-dr-BKWS-all-core-trial-EXA-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_602320994293-ADGP_Hybrid+%7C+BKWS+-+EXA+%7C+Txt+-GCP-General-core+brand-main-KWID_43700071544383179-kwd-26415313501&userloc_9071810-network_g&utm_term=KW_google%20cloud%20platform&gad_source=1&gclid=CjwKCAjwiaa2BhAiEiwAQBgyHh7e9xYKSlD8UYuoCrnyRubMfRLATsSG0oZMLvQ00TvGQk2-vggLBhoCP30QAvD_BwE&gclsrc=aw.ds).
 Set the GOOG_API_KEY environment variable to your Google Maps API Key

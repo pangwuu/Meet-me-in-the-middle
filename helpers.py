@@ -177,7 +177,7 @@ def find_nearby_places(location, place_type, radius=100, max_results=3):
     places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
     results = places.get('results', [])
     
-    while len(results) < max_results and radius <= 2000:
+    while len(results) < max_results and radius <= 1600:
         radius *= 2
         places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
         results.extend(places.get('results', []))
