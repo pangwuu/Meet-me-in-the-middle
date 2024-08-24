@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link rel="stylesheet" href="{{  url_for('static', filename='css/landing.css'  )}}">
+{% endblock %}
+
+{% block body %}
 <h1>
     Meet Me in the Middle
 </h1>
-{% endblock %}
-{% block body %}
 <div class = "mainbody"></div>
     <img src = "images/logo.png" class= "small-logo" id="small-logo">
     <button class = "get-started">
