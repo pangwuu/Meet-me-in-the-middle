@@ -8,8 +8,6 @@ from geopy.distance import distance
 import requests
 import math, random
 import time
-import aiohttp
-import asyncio
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -197,32 +195,6 @@ def get_business_image(place_data):
         photo_reference = place_data['photos'][0]['photo_reference']
         return get_place_photo_url(photo_reference)
     return None  # Return None if no photo is available
-
-async def get_place_photo_url_async(session, photo_reference, max_width=400):
-    base_url = "https://maps.googleapis.com/maps/api/place/photo"
-    params = {
-        "maxwidth": max_width,
-        "photoreference": photo_reference,
-        "key": GOOG_API_KEY
-    }
-    async with session.get(base_url, params=params) as response:
-        return response.url
-
-async def get_business_image_async(session, place_data):
-    '''
-    From a place's data, returns an image link for the place asynchronously
-    '''
-    if 'photos' in place_data and place_data['photos']:
-        photo_reference = place_data['photos'][0]['photo_reference']
-        return await get_place_photo_url_async(session, photo_reference)
-    return None  # Return None if no photo is available
-
-async def fetch_all_image_urls(places_data):
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for place in places_data:
-            tasks.append(get_business_image_async(session, place))
-        return await asyncio.gather(*tasks)
 
 def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
     """
