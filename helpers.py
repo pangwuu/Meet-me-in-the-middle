@@ -7,6 +7,7 @@ import json
 from geopy.distance import distance
 import requests
 import math, random
+import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'
@@ -34,23 +35,20 @@ class Meeting(db.Model):
     place_type = db.Column(db.String(50))
 
 class Place:
-    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, currently_open: bool):
+    def __init__(self, name: str, address: str, rating: float, total_ratings: int, business_image_link: str, time_from_a: int, time_from_b: int):
         self.name = name
         self.address = address
         self.rating = rating
         self.total_ratings = total_ratings
         # This can potentially be empty - think of the consequences
         self.business_image_link = business_image_link
-        # currently open
-        self.currently_open = currently_open
-        # routes estimated time for both
-        # This can potentially be empty - think of the consequences
-        self.business_image_link = business_image_link
-        # routes estimated time for both
-        # Get the google link
+        
+        # Get the time from this location from location a and location b
+        self.time_from_a = time_from_a
+        self.time_from_b = time_from_b
 
     def __repr__(self):
-        return f"Place(name={self.name}, address={self.address}, rating={self.rating}, total_ratings={self.total_ratings}, latitude={self.latitude}, longitude={self.longitude}, types={self.types})"
+        return f"Place(name={self.name}, address={self.address}, rating={self.rating},total_ratings={self.total_ratings}, business_image_link={self.business_image_link}, time_from_a={self.time_from_a}, time_from_b={self.time_from_b})"
 
 # Helper functions
 def geocode(address):
@@ -153,6 +151,48 @@ def find_best_midpoint(coord_a, coord_b, midpoints, mode_a, mode_b):
     
     return best_midpoint
 
+def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
+    """
+    Calculate travel times from points A and B to multiple midpoints M using specified modes of transport.
+    
+    :param a: Starting point A (string address or lat,lng)
+    :param b: Starting point B (string address or lat,lng)
+    :param m_list: List of midpoints M (list of string addresses or lat,lng)
+    :param mode_a: Mode of transport from A to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+    :param mode_b: Mode of transport from B to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+    :return: Two lists of travel times in seconds (times_a_to_m, times_b_to_m)
+    """
+    # Step 1: Geocode all addresses
+    geocoded_a = geocode(a)
+    geocoded_b = geocode(b)
+    geocoded_m_list = [geocode(m) for m in m_list]
+
+    # Step 2: Use Distance Matrix API for A to all M
+    matrix_a = gmaps.distance_matrix(
+        origins=[geocoded_a],
+        destinations=geocoded_m_list,
+        mode=mode_a
+    )
+
+    # Step 3: Use Distance Matrix API for B to all M
+    matrix_b = gmaps.distance_matrix(
+        origins=[geocoded_b],
+        destinations=geocoded_m_list,
+        mode=mode_b
+    )
+
+    # Step 4: Extract travel times
+    times_a_to_m = []
+    times_b_to_m = []
+
+    for i in range(len(geocoded_m_list)):
+        time_a = matrix_a['rows'][0]['elements'][i]['duration']['value']
+        time_b = matrix_b['rows'][0]['elements'][i]['duration']['value']
+        times_a_to_m.append(time_a)
+        times_b_to_m.append(time_b)
+
+    return times_a_to_m, times_b_to_m
+    
 def find_nearby_places(location, place_type, radius=100, max_results=10):
     """
     Returns a group of max_results nearby places to a certain coordinate.
@@ -189,8 +229,51 @@ def get_business_image(place_data):
         return get_place_photo_url(photo_reference)
     return None  # Return None if no photo is available
 
+
+def get_travel_times_matrix(a, b, m_list, mode_a, mode_b):
+    """
+    Calculate travel times from points A and B to multiple midpoints M using specified modes of transport.
+    
+    :param a: Starting point A (string address or lat,lng)
+    :param b: Starting point B (string address or lat,lng)
+    :param m_list: List of midpoints M (list of string addresses or lat,lng)
+    :param mode_a: Mode of transport from A to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+    :param mode_b: Mode of transport from B to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+    :return: Two lists of travel times in seconds (times_a_to_m, times_b_to_m)
+    """
+    # Step 1: Geocode all addresses
+    geocoded_a = geocode(a)
+    geocoded_b = geocode(b)
+    geocoded_m_list = [geocode(m) for m in m_list]
+
+    # Step 2: Use Distance Matrix API for A to all M
+    matrix_a = gmaps.distance_matrix(
+        origins=[geocoded_a],
+        destinations=geocoded_m_list,
+        mode=mode_a
+    )
+
+    # Step 3: Use Distance Matrix API for B to all M
+    matrix_b = gmaps.distance_matrix(
+        origins=[geocoded_b],
+        destinations=geocoded_m_list,
+        mode=mode_b
+    )
+
+    # Step 4: Extract travel times
+    times_a_to_m = []
+    times_b_to_m = []
+
+    for i in range(len(geocoded_m_list)):
+        time_a = matrix_a['rows'][0]['elements'][i]['duration']['value']
+        time_b = matrix_b['rows'][0]['elements'][i]['duration']['value']
+        times_a_to_m.append(time_a)
+        times_b_to_m.append(time_b)
+
+    return times_a_to_m, times_b_to_m
+
 # Step 2: Function to parse JSON and create Place objects
-def parse_places(json_data: str) -> List[Place]:
+def parse_places(location_a: str, location_b: str, json_data: str) -> List[Place]:
     """
     Function to parse JSON and create Place objects out of each of them
     """
@@ -206,14 +289,16 @@ def parse_places(json_data: str) -> List[Place]:
     # Create Place objects for each result
     for result in results:
         name = result.get('name')
-        address = result.get('formatted_address')
+        address = result.get('vicinity')
         rating = result.get('rating')
         total_ratings = result.get('user_ratings_total')
         link = get_business_image(result)
         
         # Create a Place object and add it to the list
-        place = Place(name, address, rating, total_ratings, link, True)
+        place = Place(name, address, rating, total_ratings, link, -1, -1)
         places.append(place)
+    
+    get_travel_times_matrix(location_a, location_b, places)
 
     return places
 
@@ -294,7 +379,8 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     
     # This will be dependant on travel options
     if mode_a == mode_b:
-        # We will use something which obtains a variety of points at the centre
+        # If the form of transport is roughly the same, then we can use the get_sq_midpoints function 
+        # which assumes the real closest point is the middle accounting for travel options
         midpoints = get_midpoints(geocoded_a, geocoded_b)
     else:
         midpoints = get_midpoints(geocoded_a, geocoded_b)
@@ -305,8 +391,48 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     nearby = find_nearby_places(best, location_type)
     return nearby
 
+
+# def get_travel_times(a, b, m, mode_a, mode_b):
+#     """
+#     Calculate travel times from points A and B to point M using specified modes of transport.
+    
+#     :param a: Starting point A (string address or lat,lng)
+#     :param b: Starting point B (string address or lat,lng)
+#     :param m: Midpoint M (string address or lat,lng)
+#     :param mode_a: Mode of transport from A to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+#     :param mode_b: Mode of transport from B to M (string: 'driving', 'walking', 'bicycling', or 'transit')
+#     :return: Tuple of travel times in seconds (time_a_to_m, time_b_to_m)
+#     """
+#     # Request directions from A to M
+#     geocoded_a = geocode(a)
+#     geocoded_b = geocode(b)
+#     geocoded_m = geocode(m)
+
+#     directions_a_to_m = gmaps.directions(geocoded_a, geocoded_m, mode=mode_a)
+    
+#     # Request directions from B to M
+#     directions_b_to_m = gmaps.directions(geocoded_b, geocoded_m, mode=mode_b)
+    
+#     # Extract travel times
+#     if directions_a_to_m and directions_b_to_m:
+#         time_a_to_m = directions_a_to_m[0]['legs'][0]['duration']['value']  # Time in seconds
+#         time_b_to_m = directions_b_to_m[0]['legs'][0]['duration']['value']  # Time in seconds
+        
+#         return time_a_to_m, time_b_to_m
+#     else:
+#         # Handle cases where directions couldn't be found
+#         return None, None
+
+
+location_a = "Yo Chi Newtown"
+location_b = "Yo Chi Surry Hills"
+mode_a = "driving"
+mode_b = "driving"
+
 try:
-    locations = get_middle_locations("Fisher library University of Sydney", "Castle towers", "driving", "driving")
+    a = time.time()
+    locations = get_middle_locations(location_a, location_b , mode_a, mode_b)
+    b = time.time()
 except ValueError as e:
     if str(e) == "Location a could not be geocoded":
         print("Could not geocode location A")
@@ -318,11 +444,20 @@ except ValueError as e:
         # Re-raise the exception if it's not one of the expected messages
         raise
 
-# make sure json loads into Place objects perfectly
+# make sure json loads into Place objects perfectly.
 # Deal with route times from BOTH original locations (matrix?)
+# Allow for multiple location categories
+# Allow for multiple people
+# print(locations)
+print(locations)
+print(f"Time taken: {b - a} seconds")
+# locations = parse_places(locations)
+# print(locations)
+# for i in locations:
+#     print(i.name, i.address)
 
-# for i in locations["results"]:
-#     print(f'{i}')
+# print(locations[0].address)
+# print(get_travel_times(location_a, location_b, locations[0], mode_a, mode_b))
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
