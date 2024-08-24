@@ -18,6 +18,10 @@
 </h1>
 <img src = "{{url_for('static', filename='images/logo.png')}}" class= "small-logo" id="small-logo">
 
+    {% if error %}
+        {{ error}}
+    {% endif %}
+
     {% if output %}
     <ul>
         {% for place in output['results'] %}

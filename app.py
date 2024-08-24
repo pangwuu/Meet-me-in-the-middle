@@ -22,22 +22,13 @@ def search():
 
         place_type = request.form['places']
 
-        # TOADD: dealing with specific ideas like cafe etc
-        results = helpers.get_middle_locations(locA, locB, transportA, transportB, place_type)
-        # TOADD: Deal with errors such as
-        
-            # except ValueError as e:
-            #     if str(e) == "Location a could not be geocoded":
-            #         print("Could not geocode location A")
-            #     elif str(e) == "Location b could not be geocoded":
-            #         print("Could not geocode location B")
-            #     elif str(e) == "Best location could not be found":
-            #         print("Could not find a best location")
-            #     else:
-            #         # Re-raise the exception if it's not one of the expected messages
-            #         raise
+        try:
+            results = helpers.get_middle_locations(locA, locB, transportA, transportB, place_type)
 
-        return render_template('route.html', output=results)
+        except ValueError as e:
+            error = str(e)
+
+        return render_template('route.html', output=results, error=error)
 
     else:
         return render_template('search.html')
