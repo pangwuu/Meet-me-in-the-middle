@@ -274,12 +274,6 @@ def parse_places(json_data: str, location_a: str, location_b: str, mode_a: str, 
         place = Place(name, address, rating, total_ratings, link, -1, -1)
         places.append(place)
 
-    a_to_m, b_to_m = get_travel_times_matrix(location_a, location_b, places, mode_a, mode_b)
-
-    for n in range(len(places)):
-        places[n].time_from_a = a_to_m[n]
-        places[n].time_from_b = b_to_m[n]
-
     return places
 
 
@@ -370,6 +364,17 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     nearby = find_nearby_places(best, location_type)
     return nearby
 
+def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
+    
+    a_to_m, b_to_m = get_travel_times_matrix(location_a, location_b, locations_classes, mode_a, mode_b)
+
+    for n in range(len(locations_classes)):
+        locations_classes[n].time_from_a = a_to_m[n]
+        locations_classes[n].time_from_b = b_to_m[n]
+    
+    return locations_classes
+
+
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type="cafe"):
     # try:
     #     # a = time.time()
@@ -386,5 +391,7 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
     #         # Re-raise the exception if it's not one of the expected messages
     #         raise
 
-    locations_classes = parse_places(locations_dict, location_a, location_b, mode_a, mode_b)
-    return locations_classes
+    locations_classes = parse_places(locations_dict)
+    updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
+
+    return updated_locations_classes
