@@ -75,6 +75,10 @@
                     <a href = "#">{{ place.address }}</a>
                 </div>
             </div>
+            
+            <a href="https://www.google.com/maps?q={{ place.latitude }},{{ place.longitude }}" target="_blank">
+                View {{ place.name }} on Google Maps
+            </a>
                 {% endfor %}
             </div>
 
