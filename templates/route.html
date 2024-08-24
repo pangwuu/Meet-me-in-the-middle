@@ -12,5 +12,12 @@
         Get Started!
     </a>
 </button>
+    {% if output %}
+        {% for place in output['results'] %}
+            {{ place['name'] }}
+        {% endfor %} 
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
 
 {% endblock %}

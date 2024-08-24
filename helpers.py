@@ -321,8 +321,8 @@ except ValueError as e:
 # make sure json loads into Place objects perfectly
 # Deal with route times from BOTH original locations (matrix?)
 
-for i in locations["results"]:
-    print(f'{i}')
+# for i in locations["results"]:
+#     print(f'{i}')
 
 # # Route
 # @app.route('/find_meeting_point', methods=['POST'])
