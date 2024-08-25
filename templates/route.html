@@ -81,7 +81,7 @@
                 {% endfor %}
             </div>
             <div class="grid-items-map">
-                <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key=AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
+                <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key=YOUR_API_KEY" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
             </div>
         </div>
     {% else %}
@@ -91,7 +91,7 @@
     <script>
         function updateMap(latitude, longitude) {
             var iframe = document.getElementById('mapFrame');
-            iframe.src = `https://www.google.com/maps/embed/v1/place?q=${latitude},${longitude}&key=AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI`;
+            iframe.src = `https://www.google.com/maps/embed/v1/place?q=${latitude},${longitude}&key=YOUR_API_KEY`;
         }
     </script>
 
