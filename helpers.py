@@ -289,7 +289,7 @@ def parse_places(json_data: str) -> List[Place]:
         longitude = location.get('lng', 0.0)  # Default to 0.0 if not available
         embed_link = create_embed_link_from_place(name)
         
-        # Create a Place object and add it to the list
+        # Create a Place object and add it to the list. Travel times are currently -1 as it indicates that they have not been found
         place = Place(name, address, rating, total_ratings, link, -1, -1, embed_link, latitude, longitude)
         places.append(place)
 
@@ -385,6 +385,10 @@ def get_middle_locations(location_a: str, location_b: str, mode_a: str, mode_b: 
     return nearby
 
 def add_location_data(location_a: str, location_b: str, locations_classes: List[Place], mode_a: str, mode_b: str):
+    """
+    Adds expected travel times from location a to all the proposed meeting points, and does the same with location b
+    Modifies already existing Place objects
+    """
     
     a_to_m, b_to_m = get_travel_times_matrix(location_a, location_b, locations_classes, mode_a, mode_b)
 
@@ -395,23 +399,11 @@ def add_location_data(location_a: str, location_b: str, locations_classes: List[
     return locations_classes
 
 def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mode_b: str, location_type: str):
-    # try:
-    #     # a = time.time()
-    #     # b = time.time()
-    # except ValueError as e:
-    #     if str(e) == "Location a could not be geocoded":
-    #         print("Could not geocode location A")
-    #     elif str(e) == "Location b could not be geocoded":
-    #         print("Could not geocode location B")
-    #     elif str(e) == "Best location could not be found":
-    #         print("Could not find a best location")
-    #     else:
-    #         # Re-raise the exception if it's not one of the expected messages
-    #         raise
+    """
+    Full wrapper function that takes in four user inputs, and returns a list of 6 recommended Place objects
+    """
 
     locations_classes = parse_places(get_middle_locations(location_a, location_b , mode_a, mode_b, location_type))
     updated_locations_classes = add_location_data(location_a, location_b, locations_classes, mode_a, mode_b)
     sorted_places = sorted(updated_locations_classes, key=lambda place: abs(place.time_from_a - place.time_from_b))
-    for i in sorted_places:
-        print(i.embed_link)
     return sorted_places
