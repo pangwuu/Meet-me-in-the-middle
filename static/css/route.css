@@ -148,3 +148,33 @@ nav ul li + li {
     justify-content: center; /* Horizontal alignment */
     text-align: center;
 }
+
+.error-msg {
+    background-color: white;
+    border-radius: 15px;
+    padding: 100px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 100px;
+}
+
+.return {
+    background-color: #FF5F3f;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 10px;
+    margin-top: 50px;
+    width: 300px;
+}
+
+.return-text {
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.return:hover {
+    background-color: #c92200;
+}

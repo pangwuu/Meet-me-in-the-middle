@@ -18,7 +18,13 @@
 {% block body %}
 
     {% if error %}
-        {{ error }}
+        <div class="error-msg">
+            {{ error }}
+            <br>
+            <button class="return">
+                <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
+            </button>
+        </div>
     {% endif %}
 
     {% if transport_a == "driving" %}
@@ -84,8 +90,6 @@
                 <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key={{ api_key }}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
             </div>
         </div>
-    {% else %}
-        <p>No results found.</p>
     {% endif %}
 
     <script>
