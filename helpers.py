@@ -259,7 +259,7 @@ def get_embed_link(lat, lng):
     return f"https://www.google.com/maps/embed/v1/place?q={lat},{lng}&key={GOOG_API_KEY}"
 
 def create_embed_link_from_place(place_name):
-    return f"https://www.google.com/maps/embed/v1/place?q={place_name.replace(' ', '+')}&key=YOUR_API_KEY"
+    return f"https://www.google.com/maps/embed/v1/place?q={place_name.replace(' ', '+')}&key={GOOG_API_KEY}"
 
 
 def parse_places(json_data: str) -> List[Place]:
