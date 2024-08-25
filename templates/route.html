@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{  url_for('static', filename='css/route.css'  )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/route.css') }}">
 <nav> 
-    <div class = "navbar">
-        <a href = "{{url_for('index')}}">
-            <img src="{{url_for('static', filename='images/longlogo.png')}}" alt="logo" class="small-logo">
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/longlogo.png') }}" alt="logo" class="small-logo">
         </a>
-        <div class = "topnav-right">
-            <a href = "{{  url_for('index')}}" class = "home" id = "home">Home</a>
+        <div class="topnav-right">
+            <a href="{{ url_for('index') }}" class="home" id="home">Home</a>
         </div>
     </div>
 </nav>
@@ -18,7 +18,7 @@
 {% block body %}
 
     {% if error %}
-        {{ error}}
+        {{ error }}
     {% endif %}
 
     {% if transport_a == "driving" %}
@@ -30,7 +30,6 @@
     {% elif transport_a == "transit" %}
         {% set a_icon = "./static/icons/train-subway-solid.svg" %}
     {% endif %}
-    
 
     {% if transport_b == "driving" %}
         {% set b_icon = "./static/icons/car-solid.svg" %}
@@ -43,20 +42,20 @@
     {% endif %}
 
     {% if places %}
-        <a href = "{{url_for('search')}}">
-            <img src="{{url_for('static', filename='icons/back-button.png')}}" alt="logo" class="back-button">
+        <a href="{{ url_for('search') }}">
+            <img src="{{ url_for('static', filename='icons/back-button.png') }}" alt="logo" class="back-button">
         </a>
         <p class="title-rec">Recommendations for you to <strong>Meet in the Middle!</strong></p>
-        <div class = "grid-container">
+        <div class="grid-container">
             <div class="grid-items-locations">
                 {% for place in places %}
-                <div class="location-format">
-                    <div class = "grid-title">
+                <div class="location-format" onclick="updateMap('{{ place.latitude }}', '{{ place.longitude }}')">
+                    <div class="grid-title">
                         <h3>{{ place.name }}</h3>
                     </div>
-                    <div class = "grid-info">
+                    <div class="grid-info">
                         <p class="rating">
-                            <img src="./static/icons/star.png" alt="star" class="small-icon-a">
+                            <img src="{{ url_for('static', filename='icons/star.png') }}" alt="star" class="small-icon-a">
                             {% if place.rating %}
                                 {{ place.rating }} / 5
                             {% else %}
@@ -69,11 +68,11 @@
                             {{ (place.time_from_b / 60) | round(0) }} minutes                        
                         </p>
                     </div>
-                    <div class = "grid-image">
-                        <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class = "place-img">
+                    <div class="grid-image">
+                        <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class="place-img">
                     </div>
-                    <div class = "grid-address">
-                        <a href = "#">{{ place.address }}</a>
+                    <div class="grid-address">
+                        <a href="#">{{ place.address }}</a>
                     </div>
                     <a href="https://www.google.com/maps?q={{ place.name }}" target="_blank">
                         View {{ place.name }} on Google Maps
@@ -81,12 +80,19 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class = "grid-items-map">
-                <iframe src="https://www.google.com/maps/embed/v1/place?q={{places[0].latitude}},{{places[0].longitude}}&key=AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
+            <div class="grid-items-map">
+                <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key=AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
             </div>
         </div>
     {% else %}
         <p>No results found.</p>
     {% endif %}
+
+    <script>
+        function updateMap(latitude, longitude) {
+            var iframe = document.getElementById('mapFrame');
+            iframe.src = `https://www.google.com/maps/embed/v1/place?q=${latitude},${longitude}&key=AIzaSyDF4Hqh8cRuLskQOx5yyEEDYO5bgIAATpI`;
+        }
+    </script>
 
 {% endblock %}
