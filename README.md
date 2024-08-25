@@ -1,6 +1,6 @@
 # Meet me in the middle
 
-Try it for yourself [here](https://middle-meeter-7d3b095b86e8.herokuapp.com/).
+Try it for yourself [here](https://middle-meeter-7d3b095b86e8.herokuapp.com/)! 
 
 ## Overview
 **Meet me in the middle** is a web application that helps two people find a convenient meeting point between their respective locations, optimizing travel times to ensure both individuals have an equal journey duration. By leveraging the Google Maps API, this application not only computes the optimal midpoint but also allows users to specify the type of location they want to visit—be it a café, park, restaurant, or any other place of interest.
@@ -19,7 +19,6 @@ Whether you're meeting a friend halfway or planning a rendezvous point for busin
 - **SQLite3**: Lightweight database for managing user data and search history.
 - **HTML/CSS/JavaScript**: Frontend technologies for crafting a responsive and interactive user interface.
 - **Google Maps API**: Heavily utilized for distance calculations, mapping, and finding locations of interest.
-- **Responsive Design**: Ensures the application is accessible and functional across all devices, including desktops, tablets, and smartphones.
 
 ## Installation and Setup
 1. To run the Midpoint Finder web application locally, follow these steps:
@@ -52,6 +51,7 @@ python3 app.py
 1. **Enhanced Recommendation System**: Integrate machine learning algorithms to recommend venues based on user preferences and past behavior.
 2. **Real-Time Traffic Data**: Incorporate real-time traffic updates to provide more accurate travel time estimations.
 3. **Multi-User Support**: Extend functionality to support group meetups with more than two people.
+4. **Responsive Design**: Ensure thatthe application is accessible and functional across all devices, including desktops, tablets, and smartphones.
 
 ## Contributing
 Contributions are welcome! If you have ideas for improvements or new features, feel free to fork the repository and submit a pull request.
