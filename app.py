@@ -2,8 +2,12 @@ from flask import Flask, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import helpers
+import os
 
 app = Flask(__name__)
+
+# APIKEY
+GOOG_API_KEY = os.environ.get("GOOG_API_KEY")
 
 # Allows us to configure our url
 @app.route('/')
@@ -30,7 +34,7 @@ def search():
         except ValueError as e:
             error = str(e)
 
-        return render_template('route.html', places=results, error=error, transport_a=transportA, transport_b=transportB)
+        return render_template('route.html', places=results, error=error, transport_a=transportA, transport_b=transportB, api_key=GOOG_API_KEY)
 
     else:
         return render_template('search.html')
