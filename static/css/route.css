@@ -82,6 +82,9 @@ nav ul li + li {
     padding: 15px;
 }
 
+.place-stretch {
+    grid-column: 1/3;
+}
 
 .location-format {
     display: grid;
