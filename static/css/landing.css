@@ -1,9 +1,11 @@
-body { 
+/* landing.css */
+
+body {
     background-size: cover;
     background-position: center;
     margin: 0;
     height: 100vh;
-    background-color: rgba(251, 251, 251, 0.4); /* Change the color and opacity as needed */
+    background-color: rgba(251, 251, 251, 0.4);
 }
 
 .container {
@@ -14,10 +16,11 @@ body {
     height: 100vh;
     width: 100%;
     position: relative;
+    padding: 20px;
 }
 
 #bg-image {
-    width: 100%; 
+    width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
@@ -32,11 +35,11 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    z-index: 1; 
+    z-index: 1;
 }
 
 .header-text {
-    margin: 20px 0; 
+    margin: 20px 0;
     width: 500px;
 }
 
@@ -50,7 +53,7 @@ body {
     height: 50px;
 }
 
-.get-started { 
+.get-started {
     display: block;
     margin: 20px auto;
     width: 300px;
@@ -69,4 +72,18 @@ body {
     color: #fff;
     font-size: 30px;
     text-decoration: none;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .header-text {
+        width: 100%;
+        font-size: 1.2rem;
+    }
+
+    .get-started {
+        width: 100%;
+        height: 50px;
+        font-size: 20px;
+    }
 }
