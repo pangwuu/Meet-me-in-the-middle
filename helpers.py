@@ -73,7 +73,7 @@ def geocode(address):
 
 def get_midpoints(coord_a, coord_b, num_points=5):
     """
-    Returns num_points (10 as default) points equidistant to each other, 
+    Returns num_points (5 as default) points equidistant to each other,
     along the way from coord_a and coord_b.
 
     This does NOT use any APIs and is a straight line distance, like ratio division.
