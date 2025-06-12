@@ -2,101 +2,130 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/route.css') }}">
+{% endblock %}
+
+{% block body %}
 <nav> 
     <div class="navbar">
         <a href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='images/longlogo.png') }}" alt="logo" class="small-logo">
         </a>
         <div class="topnav-right">
-            <a href="{{ url_for('index') }}" class="home" id="home">Home</a>
+            <a href="{{ url_for('search') }}" class="home" id="home">Back</a>
         </div>
     </div>
 </nav>
+
+
+{% if error %}
+    <div class="error-msg">
+        {{ error }}
+        <br>
+        <button class="return">
+            <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
+        </button>
+    </div>
+{% endif %}
+
+{% if places %}
     
-{% endblock %}
-
-{% block body %}
-
-    {% if error %}
-        <div class="error-msg">
-            {{ error }}
-            <br>
-            <button class="return">
-                <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
-            </button>
+    <div class="content-wrapper">
+        {% if people %}
+        <div class="people-summary">
+            <h3>Meeting Group ({{ people|length }} people):</h3>
+            {% for person in people %}
+                <div class="person-info">
+                    <strong>{{ person.name }}</strong> - {{ person.location }} 
+                    ({{ person.transport }})
+                </div>
+            {% endfor %}
         </div>
-    {% endif %}
+        {% endif %}
 
-    {% if transport_a == "driving" %}
-        {% set a_icon = "./static/icons/car-solid.svg" %}
-    {% elif transport_a == "walking" %}
-        {% set a_icon = "./static/icons/walking-solid.svg" %}
-    {% elif transport_a == "bicycling" %}
-        {% set a_icon = "./static/icons/bicycle-solid.svg" %}
-    {% elif transport_a == "transit" %}
-        {% set a_icon = "./static/icons/train-subway-solid.svg" %}
-    {% endif %}
-
-    {% if transport_b == "driving" %}
-        {% set b_icon = "./static/icons/car-solid.svg" %}
-    {% elif transport_b == "walking" %}
-        {% set b_icon = "./static/icons/walking-solid.svg" %}
-    {% elif transport_b == "bicycling" %}
-        {% set b_icon = "./static/icons/bicycle-solid.svg" %}
-    {% elif transport_b == "transit" %}
-        {% set b_icon = "./static/icons/train-subway-solid.svg" %}
-    {% endif %}
-
-    {% if places %}
-        <a href="{{ url_for('search') }}">
+        <!-- <a href="{{ url_for('search') }}">
             <img src="{{ url_for('static', filename='icons/back-button.png') }}" alt="logo" class="back-button">
-        </a>
+        </a> -->
+        
         <p class="title-rec">Recommendations for you to <strong>Meet in the Middle!</strong></p>
+        
         <div class="grid-container">
-            <div class="grid-items-locations">
-                {% for place in places %}
-                <div class="location-format" onclick="updateMap('{{ place.latitude }}', '{{ place.longitude }}')">
-                    <div class="grid-title">
-                        <h3>{{ place.name }}</h3>
-                    </div>
-                    <div class="grid-info">
-                        <p class="rating">
+        
+        <div class="grid-items-locations">
+        
+        {% for place in places %}
+        <div class="location-format" onclick="updateMap('{{ place.latitude }}', '{{ place.longitude }}')">
+            
+            <!-- Title at the top -->
+            <h3 class="location-title">{{ place.name }}</h3> 
+
+            <!-- Three column content section -->
+            <div class="location-content">
+                
+                <!-- Column 1: Ratings & Travel Times -->
+                <div class="content-column">
+                    <div class="rating-section">
+                        <div class="rating">
                             <img src="{{ url_for('static', filename='icons/star.png') }}" alt="star" class="small-icon-a">
                             {% if place.rating %}
-                                {{ place.rating }} / 5
+                                {{ place.rating }} / 5 ({{ place.total_ratings }} reviews)
                             {% else %}
                                 No ratings available
                             {% endif %}
-                            <br>
-                            <img src="{{ a_icon }}" alt="transporta" class="small-icon-a">
-                            {{ (place.time_from_a / 60) | round(0) }} minutes<br>
-                            <img src="{{ b_icon }}" alt="transportb" class="small-icon-b">
-                            {{ (place.time_from_b / 60) | round(0) }} minutes                        
-                        </p>
+                        </div>
                     </div>
-                    <div class="grid-image">
-                        <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class="place-img">
-                    </div>
-                    <div class="grid-address">
-                        <a href="#">{{ place.address }}</a>
-                    </div>
-                    <a href="https://www.google.com/maps?q={{ place.name }}" target="_blank" class="place-stretch">
-                        View on Google Maps
-                    </a>
+
+                    {% if place.travel_times %}
+                        <div class="travel-times">
+                            <h4>Travel Times:</h4>
+                            {% for person_name, time_seconds in place.travel_times.items() %}
+                                <div class="travel-time">
+                                    <strong>{{ person_name }}:</strong> {{ (time_seconds / 60) | round(0) }} min
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
-                {% endfor %}
+
+                <!-- Column 2: Stats -->
+                <div class="content-column">
+                    <div class="place-stats">
+                        <h4>Meeting Stats:</h4>
+                        <div><strong>Max travel time:</strong> {{ (place.max_travel_time / 60) | round(0) }} minutes</div>
+                        <div><strong>Total travel time:</strong> {{ (place.total_travel_time / 60) | round(0) }} minutes</div>
+                        <div><strong>Fairness score:</strong> {{ "%.2f"|format(place.fairness_score) }}</div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Image -->
+                <div class="image-column">
+                    <img src="{{ place.business_image_link }}" alt="Image of {{ place.name }}" class="place-img">
+                </div>
             </div>
+
+            <!-- Centered footer with address and maps link -->
+            <div class="location-footer">
+                <div class="location-address">
+                    {{ place.address }}
+                </div>
+                <a href="https://www.google.com/maps?q={{ place.name }}" target="_blank" class="maps-link">
+                    View on Google Maps
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+
+        </div>
             <div class="grid-items-map">
                 <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key={{ api_key }}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
             </div>
         </div>
-    {% endif %}
+    </div>
+{% endif %}
 
-    <script>
-        function updateMap(latitude, longitude) {
-            var iframe = document.getElementById('mapFrame');
-            iframe.src = `https://www.google.com/maps/embed/v1/place?q=${latitude},${longitude}&key={{api_key}}`;
-        }
-    </script>
-
+<script>
+    function updateMap(latitude, longitude) {
+        var iframe = document.getElementById('mapFrame');
+        iframe.src = `https://www.google.com/maps/embed/v1/place?q=${latitude},${longitude}&key={{api_key}}`;
+    }
+</script>
 {% endblock %}

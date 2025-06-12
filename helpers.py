@@ -2,11 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 import googlemaps
-from typing import List
+from typing import Any, Dict, List
 import json
 from geopy.distance import distance
 import math, random
 import urllib.parse
+import requests
 
 
 app = Flask(__name__)
@@ -18,6 +19,7 @@ GOOG_API_KEY = os.environ.get("GOOG_API_KEY")
 
 # Initialize Google Maps client
 gmaps = googlemaps.Client(key=GOOG_API_KEY)
+
 
 # Models
 class Meeting(db.Model):
@@ -73,7 +75,7 @@ def geocode(address):
 
 def get_midpoints(coord_a, coord_b, num_points=5):
     """
-    Returns num_points (10 as default) points equidistant to each other, 
+    Returns num_points (5 as default) points equidistant to each other,
     along the way from coord_a and coord_b.
 
     This does NOT use any APIs and is a straight line distance, like ratio division.
