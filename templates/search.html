@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav> 
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/longlogo.png') }}" alt="logo" class="small-logo">
+        </a>
+    </div>
+</nav>
+
+{% if error %}
+    <div class="error-msg">
+        {{ error }}
+        <br>
+        <button class="return">
+            <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
+        </button>
+    </div>
+{% endif %}
+
+
+<div class="search-container">
+    
+    <div class="meeting-place-title">
+        <h1>Meet them in the middle</h1>
+    </div>
+
+    <form method="POST" id="searchForm">
+        <div id="people-container">
+            <!-- Initial two people -->
+            <div class="person-group" data-person-index="0">
+                <div class="person-header">
+                    <h3>Person 1</h3>
+                    <button type="button" class="remove-person" onclick="removePerson(0)" style="display: none;">Remove</button>
+                </div>
+                <div class="form-row">
+                    <label>Name:</label>
+                    <input type="text" name="person_0_name" placeholder="Enter name" required>
+                </div>
+                <div class="form-row">
+                    <label>Location:</label>
+                    <div class="autocomplete-container">
+                        <input type="text" name="person_0_location" placeholder="Enter address or suburb" class="location-input" required>
+                        <div class="autocomplete-suggestions"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Transport:</label>
+                    <select name="person_0_transport" required>
+                        <option value="">Select transport method</option>
+                        <option value="driving">Driving</option>
+                        <option value="walking">Walking</option>
+                        <option value="bicycling">Bicycling</option>
+                        <option value="transit">Public Transit</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="person-group" data-person-index="1">
+                <div class="person-header">
+                    <h3>Person 2</h3>
+                    <button type="button" class="remove-person" onclick="removePerson(1)" style="display: none;">Remove</button>
+                </div>
+                <div class="form-row">
+                    <label>Name:</label>
+                    <input type="text" name="person_1_name" placeholder="Enter name" required>
+                </div>
+                <div class="form-row">
+                    <label>Location:</label>
+                    <div class="autocomplete-container">
+                        <input type="text" name="person_1_location" placeholder="Enter address or suburb" class="location-input" required>
+                        <div class="autocomplete-suggestions"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Transport:</label>
+                    <select name="person_1_transport" required>
+                        <option value="">Select transport method</option>
+                        <option value="driving">Driving</option>
+                        <option value="walking">Walking</option>
+                        <option value="bicycling">Bicycling</option>
+                        <option value="transit">Public Transit</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <button type="button" class="add-person" onclick="addPerson()">Add Another Person</button>
+        
+        <div class="form-row">
+            <label>Place Type:</label>
+            <select name="places" required>
+                <option value="restaurant">Restaurant</option>
+                <option value="cafe">Cafe</option>
+                <option value="bar">Bar</option>
+                <option value="park">Park</option>
+                <option value="shopping_mall">Shopping Mall</option>
+                <option value="movie_theater">Movie Theater</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+            <label>Sort by:</label>
+            <select name="sort_method">
+                <option value="fairness">Fairness (most equal travel times)</option>
+                <option value="total_time">Total Time (minimize combined travel)</option>
+                <option value="rating">Rating (highest rated places)</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="search-button">Find Meeting Places</button>
+    </form>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,346 @@
+/* Navigation Bar */
+.navbar {
+    height: 40px;
+    background-color: #f6f5f5;
+    padding : 15px 15px ;
+}
+
+.home {
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    color: #FF5F3f;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.back-button {
+    height: 50px;
+    position: absolute;
+    margin-left: 10%;
+    margin-top: 2%;
+}
+
+.topnav-right {
+    float : right;
+    margin-right: 20px;
+}
+
+nav ul { 
+    position: relative;
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+} 
+   
+nav ul li { 
+    display: inline-block; 
+} 
+
+nav ul li a .logo {
+    font-size : 20px;
+}
+   
+nav ul li a { 
+    display: block; 
+    padding: 10px 17px;
+    text-decoration: none; 
+    font-size : 14px;
+    color : black;
+} 
+   
+nav ul li + li { 
+    margin-left: 10px;
+} 
+
+.small-logo {
+    height: 100%;
+}
+
+.small-icon-a {
+    width: 20px;       /* Adjust width as needed */
+    height: 20px;      /* Keep it square */
+    object-fit: contain; /* Keeps aspect ratio, no stretching */
+    vertical-align: middle; /* Align nicely with text */
+}
+
+.people-summary {
+    display: block;
+    padding: 20px;
+    border: 1px solid lightgrey;
+    background-color: white;
+    box-shadow: 4px 4px 4px rgba(0,0,0,0.2);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.person-info {
+    display: inline-block;
+    margin: 5px 15px 5px 0;
+    padding: 5px 10px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Container for consistent borders */
+.content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Updated location card styling */
+.location-format {
+    display: block; /* Changed from grid to block */
+    padding: 20px;
+    border: 1px solid lightgrey;
+    background-color: white;
+    box-shadow: 4px 4px 4px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.location-format:hover {
+    box-shadow: 6px 6px 8px rgba(0,0,0,0.3);
+}
+
+.location-title {
+    text-align: center;
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.location-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.content-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.image-column {
+    flex: 0 0 200px;
+}
+
+/* Mobile-first responsive design */
+@media screen and (max-width: 768px) {
+    .content-wrapper {
+        padding: 0 15px;
+    }
+    
+    .location-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .image-column {
+        flex: none;
+        order: -1; /* Move image to top on mobile */
+    }
+    
+    .place-img {
+        height: 200px;
+    }
+    
+    .location-title {
+        font-size: 1.3rem;
+    }
+    
+    .location-format {
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 0 10px;
+    }
+    
+    .location-format {
+        padding: 12px;
+    }
+    
+    .location-title {
+        font-size: 1.2rem;
+    }
+    
+    .place-img {
+        height: 180px;
+    }
+}
+
+.rating-section {
+    margin-bottom: 15px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.travel-times {
+    margin-top: 15px;
+}
+
+.travel-times h4 {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+.travel-time {
+    display: block;
+    margin: 5px 0;
+    font-size: 0.9em;
+    padding: 3px 0;
+}
+
+.place-stats {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.place-stats h4 {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+.place-stats div {
+    margin: 8px 0;
+    font-size: 0.9em;
+}
+
+.place-img {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.location-footer {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.location-address {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.maps-link {
+    display: inline-block;
+    background-color: #FF5F3f;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.maps-link:hover {
+    background-color: #c92200;
+    color: white;
+    text-decoration: none;
+}
+
+/* Grid Layout for Locations - Updated for mobile */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    padding: 20px 0;
+    color: #444444;
+    height: 100%;
+}
+
+.title-rec {
+    color: #FF5F3f;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.grid-items-locations {
+    width: 100%;
+    height: 63vh;
+    overflow-y: scroll;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.main-map {
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Mobile responsive grid */
+@media screen and (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+    }
+    
+    .grid-items-locations {
+        height: auto;
+        max-height: 60vh;
+    }
+    
+    .grid-items-map {
+        height: 400px;
+    }
+    
+    .grid-items-map iframe {
+        height: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .title-rec {
+        font-size: 1.5rem;
+        padding: 0 15px;
+    }
+    
+    .grid-items-locations {
+        padding: 10px;
+        max-height: 50vh;
+    }
+    
+    .grid-items-map {
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .title-rec {
+        font-size: 1.3rem;
+    }
+    
+    .grid-items-map {
+        height: 250px;
+    }
+}
