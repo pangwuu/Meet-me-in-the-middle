@@ -102,7 +102,7 @@ class Place:
         self.travel_time_variance = sum((t - mean_time) ** 2 for t in times) / len(times)
         
         # Fairness score combines variance and max time
-        self.fairness_score = self.travel_time_variance + (self.max_travel_time * 0.1)
+        self.fairness_score = (self.travel_time_variance + (self.max_travel_time * 0.1))/10000
 
     def __repr__(self):
         return (f"Place(name={self.name}, address={self.address}, rating={self.rating}, "
@@ -110,7 +110,7 @@ class Place:
                 f"fairness_score={self.fairness_score:.2f})")
 
 # Helper functions
-def geocode(address):
+def geocode(address: str) -> str | None:
     """
     Geocodes one address (string) into a set of coordinates
     
@@ -122,15 +122,54 @@ def geocode(address):
         return f"{location['lat']},{location['lng']}"
     return None
 
-def geocode_people(people: List[Person]) -> List[Person]:
+# Add to your class definitions
+geocoding_cache = {}  # Simple in-memory cache
+
+def batch_geocode_people(people: List[Person]) -> List[Person]:
     """
-    Geocode all people's locations and store in their objects
+    Optimized geocoding with caching and reduced API calls
     """
+    # Check cache first
+    uncached_people = []
     for person in people:
-        person.geocoded_location = geocode(person.location)
-        if person.geocoded_location is None:
-            raise ValueError(f"Could not geocode location for {person.name}: {person.location}")
+        if person.location in geocoding_cache:
+            person.geocoded_location = geocoding_cache[person.location]
+        else:
+            uncached_people.append(person)
+    
+    # Batch geocode remaining locations
+    if uncached_people:
+        # Google Geocoding API supports batch requests, but Python client doesn't expose it well
+        # So we'll optimize by reducing individual calls through better error handling
+        for person in uncached_people:
+            try:
+                result = gmaps.geocode(person.location)
+                if result:
+                    location = result[0]['geometry']['location']
+                    coord_string = f"{location['lat']},{location['lng']}"
+                    person.geocoded_location = coord_string
+                    geocoding_cache[person.location] = coord_string
+                else:
+                    # Try a simplified version of the address
+                    simplified = person.location.split(',')[0]  # Just use first part
+                    result = gmaps.geocode(simplified)
+                    if result:
+                        location = result[0]['geometry']['location']
+                        coord_string = f"{location['lat']},{location['lng']}"
+                        person.geocoded_location = coord_string
+                        geocoding_cache[person.location] = coord_string
+                    else:
+                        raise ValueError(f"Could not geocode location for {person.name}: {person.location}")
+            except Exception as e:
+                print(f"Geocoding error for {person.name}: {e}")
+                raise
+    
     return people
+
+def clear_geocoding_cache():
+    """Clear the geocoding cache (useful for testing or memory management)"""
+    global geocoding_cache
+    geocoding_cache.clear()
 
 def get_geographic_centroid(coords: List[str]) -> str:
     """
@@ -229,26 +268,71 @@ def get_search_area_points(people: List[Person], num_points: int = 20, radius_ra
     
     return search_points
 
-def find_nearby_places(location, place_type, radius=500, max_results=5):
+def find_nearby_places(location, place_type, radius=1500, max_results=8):
     """
-    Returns a group of max_results nearby places to a certain coordinate.
-    Increased default radius for multi-person scenarios.
+    Optimized version that's smarter about radius increases
     """
-    places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
-    results = places.get('results', [])
-    
-    # Gradually increase radius if we don't have enough results
-    while len(results) < max_results and radius <= 3000:
-        radius = int(radius * 1.5)
+    try:
         places = gmaps.places_nearby(location=location, radius=radius, type=place_type)
-        new_results = places.get('results', [])
+        results = places.get('results', [])
         
-        # Add new results, avoiding duplicates
-        for place in new_results:
-            if not any(existing['place_id'] == place['place_id'] for existing in results):
-                results.append(place)
+        # If we have enough results, return them
+        if len(results) >= max_results:
+            return {"results": results[:max_results]}
+        
+        # If not enough results, try ONE larger radius instead of multiple increases
+        if len(results) < max_results and radius < 5000:
+            larger_radius = min(radius * 2, 5000)  # Double radius but cap at 5km
+            places = gmaps.places_nearby(location=location, radius=larger_radius, type=place_type)
+            results = places.get('results', [])
+        
+        return {"results": results[:max_results]}
+        
+    except Exception as e:
+        print(f"Error in places search: {e}")
+        return {"results": []}
+
+
+def find_places_optimized(people: List[Person], place_type: str, max_results: int = 10) -> dict:
+    """
+    Optimized version that uses fewer API calls by:
+    1. Single search from centroid with larger radius
+    2. Fallback to multiple points only if needed
+    """
+    coords = [person.geocoded_location for person in people if person.geocoded_location]
+    centroid = get_geographic_centroid(coords)
     
-    return {"results": results[:max_results]}
+    # Calculate appropriate radius based on spread of people
+    max_distance_km = 0
+    centroid_lat, centroid_lng = map(float, centroid.split(','))
+    
+    for coord in coords:
+        lat, lng = map(float, coord.split(','))
+        # Convert to kilometers (rough approximation)
+        distance_km = math.sqrt((lat - centroid_lat) ** 2 + (lng - centroid_lng) ** 2) * 111
+        max_distance_km = max(max_distance_km, distance_km)
+    
+    # Use radius that covers the spread plus some buffer
+    radius = min(max(int(max_distance_km * 1000 * 0.3), 1000), 5000)  # 30% of spread, min 1km, max 5km
+    
+    # Single API call with larger radius
+    places_data = find_nearby_places(centroid, place_type, radius=radius, max_results=max_results*2)
+    
+    # If we don't have enough results, only then do additional searches
+    if len(places_data.get('results', [])) < max_results:
+        # Generate fewer search points (2-3 instead of 5)
+        additional_points = get_search_area_points(people, num_points=3, radius_ratio=0.2)
+        
+        for point in additional_points[1:]:  # Skip centroid (already searched)
+            additional_data = find_nearby_places(point, place_type, radius=1000, max_results=3)
+            
+            # Merge results, avoiding duplicates
+            existing_place_ids = {p.get('place_id') for p in places_data.get('results', [])}
+            for place in additional_data.get('results', []):
+                if place.get('place_id') not in existing_place_ids:
+                    places_data.setdefault('results', []).append(place)
+    
+    return places_data
 
 def get_place_photo_url(photo_reference, max_width=300, max_height=200):
     base_url = "https://maps.googleapis.com/maps/api/place/photo"
@@ -269,61 +353,84 @@ def get_business_image(place_data):
         return get_place_photo_url(photo_reference)
     return None
 
-def get_travel_times_to_places(people: List[Person], places: List[Place]) -> List[Place]:
+def get_travel_times_optimized(people: List[Person], places: List[Place]) -> List[Place]:
     """
-    Calculate travel times from each person to each place using batch Distance Matrix API calls.
-    This is more efficient than individual calls for multiple people.
-    
-    Args:
-        people: List of Person objects with geocoded locations
-        places: List of Place objects to calculate travel times to
-    
-    Returns:
-        Updated list of Place objects with travel times populated
+    Optimized travel time calculation with reduced API calls
     """
     if not people or not places:
         return places
     
-    # Group people by transport mode for efficiency
-    mode_groups = {}
-    for person in people:
-        mode = person.transport_mode
-        if mode not in mode_groups:
-            mode_groups[mode] = []
-        mode_groups[mode].append(person)
+    # Check if everyone has the same transport mode
+    transport_modes = set(person.transport_mode for person in people)
     
-    # Get destination coordinates for all places
+    origins = [person.geocoded_location for person in people]
     destinations = [f"{place.latitude},{place.longitude}" for place in places]
     
-    # For each transport mode group, make batch API calls
-    for mode, people_group in mode_groups.items():
-        origins = [person.geocoded_location for person in people_group]
-        
+    if len(transport_modes) == 1:
+        # Everyone has same transport mode - single API call
+        mode = list(transport_modes)[0]
         try:
-            # Single API call for all people with same transport mode to all places
             matrix = gmaps.distance_matrix(
                 origins=origins,
                 destinations=destinations,
                 mode=mode
             )
             
-            # Extract travel times
-            for person_idx, person in enumerate(people_group):
+            # Process results
+            for person_idx, person in enumerate(people):
                 for place_idx, place in enumerate(places):
                     element = matrix['rows'][person_idx]['elements'][place_idx]
                     if element['status'] == 'OK':
                         travel_time = element['duration']['value']
                         place.add_travel_time(person.name, travel_time)
                     else:
-                        # If route not found, add a penalty time
                         place.add_travel_time(person.name, 9999)
-        
+                        
         except Exception as e:
-            print(f"Error calculating travel times for mode {mode}: {e}")
-            # Fallback: assign high penalty times
-            for person in people_group:
+            print(f"Error in distance matrix call: {e}")
+            # Fallback to high penalty times
+            for person in people:
                 for place in places:
                     place.add_travel_time(person.name, 9999)
+    
+    else:
+        # Multiple transport modes - but optimize by checking if we can reduce modes
+        # For example, if someone chose "transit" but it's not available, fall back to "walking"
+        
+        # Group by transport mode but be smarter about it
+        mode_groups = {}
+        for person in people:
+            # Normalize transport modes (e.g., "car" -> "driving")
+            normalized_mode = normalize_transport_mode(person.transport_mode)
+            if normalized_mode not in mode_groups:
+                mode_groups[normalized_mode] = []
+            mode_groups[normalized_mode].append(person)
+        
+        # Make API calls for each unique mode
+        for mode, people_group in mode_groups.items():
+            group_origins = [person.geocoded_location for person in people_group]
+            
+            try:
+                matrix = gmaps.distance_matrix(
+                    origins=group_origins,
+                    destinations=destinations,
+                    mode=mode
+                )
+                
+                for person_idx, person in enumerate(people_group):
+                    for place_idx, place in enumerate(places):
+                        element = matrix['rows'][person_idx]['elements'][place_idx]
+                        if element['status'] == 'OK':
+                            travel_time = element['duration']['value']
+                            place.add_travel_time(person.name, travel_time)
+                        else:
+                            place.add_travel_time(person.name, 9999)
+            
+            except Exception as e:
+                print(f"Error calculating travel times for mode {mode}: {e}")
+                for person in people_group:
+                    for place in places:
+                        place.add_travel_time(person.name, 9999)
     
     # Calculate metrics for each place
     for place in places:
@@ -379,7 +486,7 @@ def get_middle_locations_multi_person(people: List[Person], location_type: str, 
         List of Place objects sorted by fairness score
     """
     # Geocode all locations
-    people = geocode_people(people)
+    people = batch_geocode_people(people)
     
     # Generate search points around the geographic centroid
     search_points = get_search_area_points(people, num_points=5)  # Reduced for API efficiency
@@ -400,7 +507,7 @@ def get_middle_locations_multi_person(people: List[Person], location_type: str, 
                 all_places.append(place)
     
     # Calculate travel times for all people to all places
-    all_places = get_travel_times_to_places(people, all_places)
+    all_places = get_travel_times_optimized(people, all_places)
     
     # Filter out places with invalid travel times for any person
     valid_places = []
