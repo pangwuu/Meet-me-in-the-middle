@@ -17,18 +17,46 @@
 </nav>
 
 
+<!-- Error message section -->
 {% if error %}
-    <div class="error-msg">
-        {{ error }}
-        <br>
-        <button class="return">
-            <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
-        </button>
-    </div>
-{% endif %}
+    <!-- General error -->
 
-{% if places %}
+    <div class="error-container">
+        <div class="error-msg">
+            <div class="error-icon">⚠️</div>
+            <div class="error-text">
+                <h3>Something went wrong</h3>
+                <p>{{ error }}</p>
+            </div>
+            <div class="error-actions">
+                <button class="return-btn">
+                    <a href="{{ url_for('search') }}" class="return-text">Go Back</a>
+                </button>
+                <button class="retry-btn" onclick="location.reload()">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+{% elif not places %}
+    <!-- Handle case where no places were found but no explicit error -->
+    <div class="error-container">
+        <div class="error-msg">
+            <div class="error-icon">🔍</div>
+            <div class="error-text">
+                <h3>No meeting places found</h3>
+                <p>We couldn't find any suitable meeting locations for your group. Try adjusting your search criteria or locations.</p>
+            </div>
+            <div class="error-actions">
+                <button class="return-btn">
+                    <a href="{{ url_for('search') }}" class="return-text">Go Back</a>
+                </button>
+            </div>
+        </div>
+    </div>
     
+{% else %}    
     <div class="content-wrapper">
         {% if people %}
         <div class="people-summary">
