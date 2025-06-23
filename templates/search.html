@@ -18,7 +18,7 @@
         {{ error }}
         <br>
         <button class="return">
-            <a href="{{ url_for('search') }}" class="return-text" id="home">Go Back</a>
+            <a href="{{ url_for('search') }}" class="return-text" id="home onclick=saveDynamicFormData()">Go Back</a>
         </button>
     </div>
 {% endif %}
@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-row">
                     <label>Name:</label>
-                    <input type="text" name="person_0_name" placeholder="Enter name" required>
+                    <input type="text" name=erson_0_name" placeholder="Enter name" required>
                 </div>
                 <div class="form-row">
                     <label>Location:</label>

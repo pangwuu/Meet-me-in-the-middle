@@ -42,10 +42,6 @@
         </div>
         {% endif %}
 
-        <!-- <a href="{{ url_for('search') }}">
-            <img src="{{ url_for('static', filename='icons/back-button.png') }}" alt="logo" class="back-button">
-        </a> -->
-        
         <p class="title-rec">Recommendations for you to <strong>Meet in the Middle!</strong></p>
         
         <div class="grid-container">
@@ -116,7 +112,7 @@
 
         </div>
             <div class="grid-items-map">
-                <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].latitude }},{{ places[0].longitude }}&key={{ api_key }}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
+                <iframe id="mapFrame" src="https://www.google.com/maps/embed/v1/place?q={{ places[0].name|urlencode }}&key={{ api_key }}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="main-map"></iframe>
             </div>
         </div>
     </div>

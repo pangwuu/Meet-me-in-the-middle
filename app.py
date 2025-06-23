@@ -1,8 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from refactored import Person, get_all_locations_for_group, get_location_suggestions
-from datetime import datetime
-import helpers
 import os
 
 app = Flask(__name__)

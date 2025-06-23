@@ -401,7 +401,7 @@ def get_travel_times_optimized(people: List[Person], places: List[Place]) -> Lis
         mode_groups = {}
         for person in people:
             # Normalize transport modes (e.g., "car" -> "driving")
-            normalized_mode = normalize_transport_mode(person.transport_mode)
+            normalized_mode = person.transport_mode
             if normalized_mode not in mode_groups:
                 mode_groups[normalized_mode] = []
             mode_groups[normalized_mode].append(person)
@@ -582,15 +582,6 @@ def get_all_locations_classes(location_a: str, location_b: str, mode_a: str, mod
         Person("Person B", location_b, mode_b)
     ]
     return get_all_locations_for_group(people, location_type)
-
-# Example usage functions
-def create_example_group() -> List[Person]:
-    """Create an example group for testing"""
-    return [
-        Person("Sarah", "34 Nottinghill Road Lidcombe", "driving"),
-        Person("Annabel", "7 Lowry Road Lalor Park", "driving"),
-        Person("Johnny", "23A Pembroke Street, Epping Sydney", "driving"),
-    ]
 
 def print_meeting_analysis(places: List[Place], people: List[Person]):
     """Print a detailed analysis of meeting options"""
