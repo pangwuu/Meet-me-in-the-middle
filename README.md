@@ -21,7 +21,7 @@ Whether you're meeting a friend halfway or planning a rendezvous point for busin
 - **Google Maps API**: Heavily utilized for distance calculations, mapping, and finding locations of interest.
 
 ## Installation and Setup
-1. To run the Midpoint Finder web application locally, follow these steps:
+1. To run Meet Me in the Middle locally, follow these steps:
 ```
 git clone https://github.com/your-username/midpoint-finder.git
 cd midpoint-finder
