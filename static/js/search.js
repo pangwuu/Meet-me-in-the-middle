@@ -176,12 +176,12 @@ function saveDynamicFormData() {
         sortMethod
     };
 
-    localStorage.setItem('searchFormData', JSON.stringify(searchFormData));
+    sessionStorage.setItem('searchFormData', JSON.stringify(searchFormData));
     console.log('Saved form data:', searchFormData);
 }
 
 function addSavedData() {
-    const stored = localStorage.getItem('searchFormData');
+    const stored = sessionStorage.getItem('searchFormData');
     if (!stored) return;
 
     const { people, placeType, sortMethod } = JSON.parse(stored);

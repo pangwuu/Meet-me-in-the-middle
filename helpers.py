@@ -7,8 +7,6 @@ import json
 from geopy.distance import distance
 import math, random
 import urllib.parse
-import requests
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meetingpoints.db'

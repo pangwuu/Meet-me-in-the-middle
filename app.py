@@ -63,7 +63,7 @@ def search():
             error = str(e)
         except Exception as e:
             error = f"An error occurred: {str(e)}"
-
+        
         return render_template('route.html', 
                              places=results, 
                              error=error, 
