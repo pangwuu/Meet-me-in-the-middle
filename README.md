@@ -23,12 +23,12 @@ Whether you're meeting a friend halfway or planning a rendezvous point for busin
 ## Installation and Setup
 1. To run Meet Me in the Middle locally, follow these steps:
 ```
-git clone https://github.com/your-username/midpoint-finder.git
-cd midpoint-finder
+git clone https://github.com/your-username/Meet-me-in-the-middle.git
+cd meet-me-in-the-middle
 ```
 2. Install Required Dependencies: Ensure you have Python installed (preferably version 3.7 or higher). Install Flask and other dependencies via pip.
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 3. Set Up Your Google Maps API Key: Obtain an API key from the [Google Cloud Platform](https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=japac-AU-all-en-dr-BKWS-all-core-trial-EXA-dr-1605216&utm_content=text-ad-none-none-DEV_c-CRE_602320994293-ADGP_Hybrid+%7C+BKWS+-+EXA+%7C+Txt+-GCP-General-core+brand-main-KWID_43700071544383179-kwd-26415313501&userloc_9071810-network_g&utm_term=KW_google%20cloud%20platform&gad_source=1&gclid=CjwKCAjwiaa2BhAiEiwAQBgyHh7e9xYKSlD8UYuoCrnyRubMfRLATsSG0oZMLvQ00TvGQk2-vggLBhoCP30QAvD_BwE&gclsrc=aw.ds).
 Set the GOOG_API_KEY environment variable to your Google Maps API Key
@@ -50,8 +50,9 @@ python3 app.py
 ## Future Enhancements
 1. **Enhanced Recommendation System**: Integrate machine learning algorithms to recommend venues based on user preferences and past behavior.
 2. **Real-Time Traffic Data**: Incorporate real-time traffic updates to provide more accurate travel time estimations.
-3. **Multi-User Support**: Extend functionality to support group meetups with more than two people.
-4. **Responsive Design**: Ensure thatthe application is accessible and functional across all devices, including desktops, tablets, and smartphones.
+3. **Calendar Integration**: Allow users to create a calendar event for their meeting directly from the application, including the location, time, and a link to the directions.
+4. **Cost Estimation**: Provide an estimated cost for each user's journey, factoring in fuel for driving or fares for public transport.
+5. **Sharing Options**: Add a feature to easily share the proposed meeting point and directions with the other person via a shareable link, email, or messaging app.
 
 ## Contributing
 Contributions are welcome! If you have ideas for improvements or new features, feel free to fork the repository and submit a pull request.

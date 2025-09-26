@@ -2,3 +2,4 @@
 *.DS_Store
 *myenv
 apikey.txt
+/venv
