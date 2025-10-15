@@ -1,6 +1,6 @@
 # Meet me in the middle
 
-Try it for yourself [here](https://middle-meeter-7d3b095b86e8.herokuapp.com/)! 
+Try it for yourself [here](https://meet-me-in-the-middle.onrender.com)! 
 
 ## Overview
 **Meet me in the middle** is a web application that helps two people find a convenient meeting point between their respective locations, optimizing travel times to ensure both individuals have an equal journey duration. By leveraging the Google Maps API, this application not only computes the optimal midpoint but also allows users to specify the type of location they want to visit—be it a café, park, restaurant, or any other place of interest.
